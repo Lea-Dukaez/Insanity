@@ -10,6 +10,8 @@ import UIKit
 
 class ProgressViewController: UIViewController {
     
+//    change storyboard stackView label for tableview  4 sections(col) / 9 rows each?
+    
     var userName = K.cell.malekLabel
     var avatarImg = K.cell.malekAvatar
 
@@ -18,11 +20,9 @@ class ProgressViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
-        
         userLabel.text = userName
         userImage.image = UIImage(named: avatarImg)
     }
+    
     
 }
