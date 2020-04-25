@@ -10,8 +10,8 @@ import UIKit
 
 class WelcomeViewController: UIViewController {
     
-    var user = K.cell.malekLabel
-    var avatar = K.cell.malekAvatar
+    var user = K.userCell.malekLabel
+    var avatar = K.userCell.malekAvatar
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -29,7 +29,7 @@ class WelcomeViewController: UIViewController {
         tableView.delegate = self
         tableView.dataSource = self
         
-        tableView.register(UINib(nibName: K.cell.cellNibName, bundle: nil), forCellReuseIdentifier: K.cell.cellIdentifier)
+        tableView.register(UINib(nibName: K.userCell.userCellNibName, bundle: nil), forCellReuseIdentifier: K.userCell.userCellIdentifier)
     }
     
 
@@ -56,15 +56,15 @@ extension WelcomeViewController: UITableViewDataSource, UITableViewDelegate {
         
         // create a new cell if needed or reuse an old one
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: K.cell.cellIdentifier, for: indexPath) as! UserCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: K.userCell.userCellIdentifier, for: indexPath) as! UserCell
 
         // set the text from the data model
         if indexPath.row == 0 {
-            cell.avatarImage.image = UIImage(named: K.cell.malekAvatar)
-            cell.userLabel.text = K.cell.malekLabel
+            cell.avatarImage.image = UIImage(named: K.userCell.malekAvatar)
+            cell.userLabel.text = K.userCell.malekLabel
         } else if indexPath.row == 1 {
-            cell.avatarImage.image =  UIImage(named: K.cell.leaAvatar)
-            cell.userLabel.text = K.cell.leaLabel
+            cell.avatarImage.image =  UIImage(named: K.userCell.leaAvatar)
+            cell.userLabel.text = K.userCell.leaLabel
         }
         
         return cell
@@ -73,11 +73,11 @@ extension WelcomeViewController: UITableViewDataSource, UITableViewDelegate {
     // method to run when table view cell is tapped
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
-            avatar = K.cell.malekAvatar
-            user = K.cell.malekLabel
+            avatar = K.userCell.malekAvatar
+            user = K.userCell.malekLabel
         } else if indexPath.row == 1 {
-            avatar =  K.cell.leaAvatar
-            user = K.cell.leaLabel
+            avatar =  K.userCell.leaAvatar
+            user = K.userCell.leaLabel
         }
         // when click on cell
         performSegue(withIdentifier: K.segueToProgress, sender: self)

@@ -9,19 +9,27 @@
 struct K {
     static let appName = "INSANITY"
     static let segueToProgress = "goToProgress"
+
     
     struct BrandColor {
         static let blueGreyBrandColor = "BlueGreyBrandColor"
         static let greenBrandColor = "GreenBrandColor"
     }
     
-    struct cell {
-        static let cellIdentifier = "myReusableCell"
-        static let cellNibName = "UserCell"
+    struct userCell {
+        static let userCellIdentifier = "myReusableCell"
+        static let userCellNibName = "UserCell"
         static let leaAvatar = "LeaAvatar"
         static let malekAvatar = "MalekAvatar"
         static let leaLabel = "Lea, super courgette"
         static let malekLabel = "Malfouf, le nul"
     }
     
+    struct workout {
+        static let workoutMove = ["Switch Kicks", "Power Jack", "Power Knees", "Power Jump", "Jump Squat Square", "Suicide Jump", "Push-Up Jack", "Plank Mountain Climbers" ]
+        static let workoutCellIdentifier = "workoutMoveCell"
+        static let workoutCellNibName = "WorkoutCell"
+    }
+
+
 }

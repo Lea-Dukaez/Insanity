@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		DB69838D24543B0C00B84087 /* WorkoutCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB69838B24543B0C00B84087 /* WorkoutCell.swift */; };
+		DB69838E24543B0C00B84087 /* WorkoutCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB69838C24543B0C00B84087 /* WorkoutCell.xib */; };
+		DB69839024543DCE00B84087 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB69838F24543DCE00B84087 /* Workout.swift */; };
+		DB69839224543DDD00B84087 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB69839124543DDD00B84087 /* DataManager.swift */; };
 		DB989B342452EE74009F2C6F /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB989B322452EE74009F2C6F /* UserCell.swift */; };
 		DB989B352452EE74009F2C6F /* UserCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB989B332452EE74009F2C6F /* UserCell.xib */; };
 		DB989B372452F085009F2C6F /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB989B362452F085009F2C6F /* Constants.swift */; };
@@ -21,6 +25,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		DB69838B24543B0C00B84087 /* WorkoutCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCell.swift; sourceTree = "<group>"; };
+		DB69838C24543B0C00B84087 /* WorkoutCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutCell.xib; sourceTree = "<group>"; };
+		DB69838F24543DCE00B84087 /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
+		DB69839124543DDD00B84087 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
 		DB989B322452EE74009F2C6F /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
 		DB989B332452EE74009F2C6F /* UserCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = UserCell.xib; sourceTree = "<group>"; };
 		DB989B362452F085009F2C6F /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -47,12 +55,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		DB69839324543DE100B84087 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				DB69839124543DDD00B84087 /* DataManager.swift */,
+				DB69838F24543DCE00B84087 /* Workout.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		DB989B302452EE34009F2C6F /* View */ = {
 			isa = PBXGroup;
 			children = (
 				DBD7932B2452265D009358F8 /* Main.storyboard */,
 				DB989B322452EE74009F2C6F /* UserCell.swift */,
 				DB989B332452EE74009F2C6F /* UserCell.xib */,
+				DB69838B24543B0C00B84087 /* WorkoutCell.swift */,
+				DB69838C24543B0C00B84087 /* WorkoutCell.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -88,8 +107,9 @@
 			children = (
 				DBD793252452265D009358F8 /* AppDelegate.swift */,
 				DBD793272452265D009358F8 /* SceneDelegate.swift */,
-				DB989B312452EE3D009F2C6F /* Controller */,
+				DB69839324543DE100B84087 /* Models */,
 				DB989B302452EE34009F2C6F /* View */,
+				DB989B312452EE3D009F2C6F /* Controller */,
 				DBD7932E24522661009358F8 /* Assets.xcassets */,
 				DBD7933024522661009358F8 /* LaunchScreen.storyboard */,
 				DBD7933324522661009358F8 /* Info.plist */,
@@ -159,6 +179,7 @@
 				DBD7933224522661009358F8 /* LaunchScreen.storyboard in Resources */,
 				DB989B352452EE74009F2C6F /* UserCell.xib in Resources */,
 				DBD7932F24522661009358F8 /* Assets.xcassets in Resources */,
+				DB69838E24543B0C00B84087 /* WorkoutCell.xib in Resources */,
 				DBD7932D2452265D009358F8 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -171,12 +192,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				DB989B372452F085009F2C6F /* Constants.swift in Sources */,
+				DB69839224543DDD00B84087 /* DataManager.swift in Sources */,
 				DBD7932A2452265D009358F8 /* WelcomeViewController.swift in Sources */,
 				DB989B342452EE74009F2C6F /* UserCell.swift in Sources */,
 				DB989B3B2452F740009F2C6F /* ProgressViewController.swift in Sources */,
 				DBD793262452265D009358F8 /* AppDelegate.swift in Sources */,
+				DB69839024543DCE00B84087 /* Workout.swift in Sources */,
 				DB989B392452F730009F2C6F /* TestViewController.swift in Sources */,
 				DBD793282452265D009358F8 /* SceneDelegate.swift in Sources */,
+				DB69838D24543B0C00B84087 /* WorkoutCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -321,6 +345,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U4MJCZ5RFJ;
 				INFOPLIST_FILE = Insanity/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -338,6 +363,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = U4MJCZ5RFJ;
 				INFOPLIST_FILE = Insanity/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

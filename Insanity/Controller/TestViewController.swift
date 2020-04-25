@@ -10,6 +10,9 @@ import UIKit
 
 class TestViewController: UIViewController {
     
+    var leaWorkoutTest = [String]()
+    var malekWorkoutTest = [String]()
+    
     @IBOutlet weak var leaSKTextField: UITextField!
     @IBOutlet weak var malekSKTextField: UITextField!
     @IBOutlet weak var leaPJKTextField: UITextField!
@@ -39,6 +42,28 @@ class TestViewController: UIViewController {
         
 //        save data to firastore
         
+        // Lea Data
+        leaWorkoutTest.append(leaSKTextField.text!)
+        leaWorkoutTest.append(leaPJKTextField.text!)
+        leaWorkoutTest.append(leaPKTextField.text!)
+        leaWorkoutTest.append(leaPJTextField.text!)
+        leaWorkoutTest.append(leaJSQTextField.text!)
+        leaWorkoutTest.append(leaSJTextField.text!)
+        leaWorkoutTest.append(leaPUJKTextField.text!)
+        leaWorkoutTest.append(leaPMCTextField.text!)
+        
+        // Malek Data
+        malekWorkoutTest.append(malekSKTextField.text!)
+        malekWorkoutTest.append(malekPJKTextField.text!)
+        malekWorkoutTest.append(malekPKTextField.text!)
+        malekWorkoutTest.append(malekPJTextField.text!)
+        malekWorkoutTest.append(malekJSQTextField.text!)
+        malekWorkoutTest.append(malekSJTextField.text!)
+        malekWorkoutTest.append(malekPUJKTextField.text!)
+        malekWorkoutTest.append(malekPMCTextField.text!)
+        
+        print(leaWorkoutTest)
+        print(malekWorkoutTest)
         
         // dismiss view
         self.navigationController?.popViewController(animated: true)
