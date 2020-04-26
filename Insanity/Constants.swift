@@ -30,6 +30,17 @@ struct K {
         static let workoutCellIdentifier = "workoutMoveCell"
         static let workoutCellNibName = "WorkoutCell"
     }
+    
+    struct FStore {
+        static let collectionName = "workoutTest"
+        static let dateField = "date"
+        static let userField = "user"
+        static let testField = "testArray"
+        static let malekUser = "Malek"
+        static let leaUser = "Lea"
+
+
+    }
 
 
 }

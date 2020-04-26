@@ -7,19 +7,10 @@
 //
 
 import Foundation
+import Firebase
 
-struct Workout {
-    let id: Int
-    let oldNumber: String
-    let newNumber: String
+struct WorkoutTest {
+    let user: String
+    let workOutResult: [String]
+    let date: Timestamp
 }
-
-
-
-//struct Workout {
-//    let user: String
-//    let workOutId: Int
-//    let numberDone: String
-//    let date: TimeStamps
-//}
-

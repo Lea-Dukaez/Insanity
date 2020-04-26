@@ -7,9 +7,11 @@
 //
 
 import UIKit
+import Firebase
 
 class TestViewController: UIViewController {
     
+    let db = Firestore.firestore()
     var leaWorkoutTest = [String]()
     var malekWorkoutTest = [String]()
     
@@ -30,18 +32,13 @@ class TestViewController: UIViewController {
     @IBOutlet weak var leaPMCTextField: UITextField!
     @IBOutlet weak var malekPMCTextField: UITextField!
     
-    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
     }
-    
 
     @IBAction func validatePressed(_ sender: UIButton) {
-        
-//        save data to firastore
-        
         // Lea Data
         leaWorkoutTest.append(leaSKTextField.text!)
         leaWorkoutTest.append(leaPJKTextField.text!)
@@ -51,7 +48,6 @@ class TestViewController: UIViewController {
         leaWorkoutTest.append(leaSJTextField.text!)
         leaWorkoutTest.append(leaPUJKTextField.text!)
         leaWorkoutTest.append(leaPMCTextField.text!)
-        
         // Malek Data
         malekWorkoutTest.append(malekSKTextField.text!)
         malekWorkoutTest.append(malekPJKTextField.text!)
@@ -62,13 +58,36 @@ class TestViewController: UIViewController {
         malekWorkoutTest.append(malekPUJKTextField.text!)
         malekWorkoutTest.append(malekPMCTextField.text!)
         
-        print(leaWorkoutTest)
-        print(malekWorkoutTest)
+        // Add a new document in Firestore for Lea
+        db.collection(K.FStore.collectionName).addDocument(data: [
+            K.FStore.userField: K.FStore.leaUser,
+            K.FStore.testField: leaWorkoutTest,
+            K.FStore.dateField: Timestamp(date: Date())
+        ]) { error in
+            if let err = error {
+                print("Error adding document: \(err)")
+            } else {
+                print("Document added!")
+                self.leaWorkoutTest = [String]()
+            }
+        }
+        // Add a new document in Firestore for Malek
+        db.collection(K.FStore.collectionName).addDocument(data: [
+            K.FStore.userField: K.FStore.malekUser,
+            K.FStore.testField: malekWorkoutTest,
+            K.FStore.dateField: Timestamp(date: Date())
+        ]) { error in
+            if let err = error {
+                print("Error adding document: \(err)")
+            } else {
+                print("Document added!")
+                self.malekWorkoutTest = [String]()
+            }
+        }
         
+              
         // dismiss view
         self.navigationController?.popViewController(animated: true)
-        
     }
     
-
 }
