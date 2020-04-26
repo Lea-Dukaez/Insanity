@@ -13,3 +13,13 @@ struct Workout {
     let oldNumber: String
     let newNumber: String
 }
+
+
+
+//struct Workout {
+//    let user: String
+//    let workOutId: Int
+//    let numberDone: String
+//    let date: TimeStamps
+//}
+
