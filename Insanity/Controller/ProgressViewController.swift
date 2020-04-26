@@ -29,11 +29,8 @@ class ProgressViewController: UIViewController {
         userImage.image = UIImage(named: avatarImg)
         
         loadWorkoutData()
-        
-        DispatchQueue.main.async {
-            self.tableView.dataSource = self
-            self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
-        }
+
+    
     }
     
     func loadWorkoutData() {
@@ -56,6 +53,8 @@ class ProgressViewController: UIViewController {
                                     let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
                                     self.dataWorkoutTest.append(newWorkoutTest)
                                     DispatchQueue.main.async {
+                                        self.tableView.dataSource = self
+                                        self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
                                         self.tableView.reloadData()
                                     }
                                 }
@@ -79,6 +78,8 @@ class ProgressViewController: UIViewController {
                                     let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
                                     self.dataWorkoutTest.append(newWorkoutTest)
                                     DispatchQueue.main.async {
+                                        self.tableView.dataSource = self
+                                        self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
                                         self.tableView.reloadData()
                                     }
                                 }
@@ -126,20 +127,34 @@ extension ProgressViewController: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: K.workout.workoutCellIdentifier, for: indexPath) as! WorkoutCell
         
-        if indexPath.row == 0 {
-            cell.workoutMoveLabel.text = ""
-            cell.oldDataLabel.text = dateString(timeStampDate: dataWorkoutTest[0].date)
-            cell.newDataLabel.text = dateString(timeStampDate: dataWorkoutTest[1].date)
-            cell.percentLabel.text = "%"
-            cell.oldDataLabel.textColor = .white
-            cell.newDataLabel.textColor = .white
-            cell.percentLabel.textColor = .white
+        if dataWorkoutTest.count == 1 {
+            if indexPath.row == 0 {
+                cell.workoutMoveLabel.text = ""
+                cell.oldDataLabel.text = dateString(timeStampDate: dataWorkoutTest[0].date)
+                cell.newDataLabel.text = "N/A"
+                cell.percentLabel.text = "%"
+            } else {
+                cell.workoutMoveLabel.text = K.workout.workoutMove[indexPath.row-1]
+                cell.oldDataLabel.text = dataWorkoutTest[0].workOutResult[indexPath.row-1]
+                cell.newDataLabel.text = "N/A"
+                cell.percentLabel.text = "N/A"
+                cell.newDataLabel.textColor = UIColor(named: K.BrandColor.greenBrandColor)
+                cell.percentLabel.textColor = UIColor(named: K.BrandColor.greenBrandColor)
+            }
         } else {
-            cell.workoutMoveLabel.text = K.workout.workoutMove[indexPath.row-1]
-            cell.oldDataLabel.text = dataWorkoutTest[0].workOutResult[indexPath.row-1]
-            cell.newDataLabel.text = dataWorkoutTest[1].workOutResult[indexPath.row-1]
-            cell.percentLabel.text = Percent(old: dataWorkoutTest[0].workOutResult[indexPath.row-1], new: dataWorkoutTest[1].workOutResult[indexPath.row-1], cellForPercent: cell)
+            if indexPath.row == 0 {
+                cell.workoutMoveLabel.text = ""
+                cell.oldDataLabel.text = dateString(timeStampDate: dataWorkoutTest[0].date)
+                cell.newDataLabel.text = dateString(timeStampDate: dataWorkoutTest[1].date)
+                cell.percentLabel.text = "%"
+            } else {
+                cell.workoutMoveLabel.text = K.workout.workoutMove[indexPath.row-1]
+                cell.oldDataLabel.text = dataWorkoutTest[0].workOutResult[indexPath.row-1]
+                cell.newDataLabel.text = dataWorkoutTest[1].workOutResult[indexPath.row-1]
+                cell.percentLabel.text = Percent(old: dataWorkoutTest[0].workOutResult[indexPath.row-1], new: dataWorkoutTest[1].workOutResult[indexPath.row-1], cellForPercent: cell)
+            }
         }
+
         return cell
     }
 }
