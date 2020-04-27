@@ -40,7 +40,7 @@ class ProgressViewController: UIViewController {
         // retrieve data for Malek
         if userName == K.userCell.malekLabel {
             db.collection(K.FStore.collectionName)
-                .order(by: K.FStore.dateField).limit(to: 2)
+                .order(by: K.FStore.dateField, descending: true).limit(to: 2)
                 .whereField(K.FStore.userField, isEqualTo: K.FStore.malekUser)
                 .getDocuments() { (querySnapshot, error) in
                     if let err = error {
@@ -56,6 +56,7 @@ class ProgressViewController: UIViewController {
                                         self.tableView.dataSource = self
                                         self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
                                         self.tableView.reloadData()
+                                        print(self.dataWorkoutTest)
                                     }
                                 }
                             }
@@ -65,7 +66,7 @@ class ProgressViewController: UIViewController {
         } // retrieve data for Lea
         else if userName == K.userCell.leaLabel {
             db.collection(K.FStore.collectionName)
-                .order(by: K.FStore.dateField).limit(to: 2)
+                .order(by: K.FStore.dateField, descending: true).limit(to: 2)
                 .whereField(K.FStore.userField, isEqualTo: K.FStore.leaUser)
                 .getDocuments() { (querySnapshot, error) in
                     if let err = error {
@@ -81,6 +82,7 @@ class ProgressViewController: UIViewController {
                                         self.tableView.dataSource = self
                                         self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
                                         self.tableView.reloadData()
+                                        print(self.dataWorkoutTest)
                                     }
                                 }
                             }
@@ -144,14 +146,14 @@ extension ProgressViewController: UITableViewDataSource {
         } else {
             if indexPath.row == 0 {
                 cell.workoutMoveLabel.text = ""
-                cell.oldDataLabel.text = dateString(timeStampDate: dataWorkoutTest[0].date)
-                cell.newDataLabel.text = dateString(timeStampDate: dataWorkoutTest[1].date)
+                cell.oldDataLabel.text = dateString(timeStampDate: dataWorkoutTest[1].date)
+                cell.newDataLabel.text = dateString(timeStampDate: dataWorkoutTest[0].date)
                 cell.percentLabel.text = "%"
             } else {
                 cell.workoutMoveLabel.text = K.workout.workoutMove[indexPath.row-1]
-                cell.oldDataLabel.text = dataWorkoutTest[0].workOutResult[indexPath.row-1]
-                cell.newDataLabel.text = dataWorkoutTest[1].workOutResult[indexPath.row-1]
-                cell.percentLabel.text = Percent(old: dataWorkoutTest[0].workOutResult[indexPath.row-1], new: dataWorkoutTest[1].workOutResult[indexPath.row-1], cellForPercent: cell)
+                cell.oldDataLabel.text = dataWorkoutTest[1].workOutResult[indexPath.row-1]
+                cell.newDataLabel.text = dataWorkoutTest[0].workOutResult[indexPath.row-1]
+                cell.percentLabel.text = Percent(old: dataWorkoutTest[1].workOutResult[indexPath.row-1], new: dataWorkoutTest[0].workOutResult[indexPath.row-1], cellForPercent: cell)
             }
         }
 

@@ -9,7 +9,7 @@
 import UIKit
 import Firebase
 
-class TestViewController: UIViewController {
+class TestViewController: UIViewController, UITextFieldDelegate {
     
     let db = Firestore.firestore()
     var leaWorkoutTest = [String]()
@@ -32,12 +32,20 @@ class TestViewController: UIViewController {
     @IBOutlet weak var leaPMCTextField: UITextField!
     @IBOutlet weak var malekPMCTextField: UITextField!
     
+    var textFieldArray = [UITextField]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        textFieldArray = [leaSKTextField, malekSKTextField, leaPJKTextField, malekPJKTextField, leaPKTextField, malekPKTextField, leaPJTextField, malekPJTextField, leaJSQTextField, malekJSQTextField, leaSJTextField, malekSJTextField, leaPUJKTextField, malekPUJKTextField, leaPMCTextField, malekPMCTextField]
 
-        // Do any additional setup after loading the view.
+        for textField in textFieldArray {
+            textField.delegate = self
+            textField.keyboardToolbar.doneBarButton.setTarget(self, action: #selector(doneButtonClicked))
+        }
+        
     }
-
+    
     @IBAction func validatePressed(_ sender: UIButton) {
         // Lea Data
         leaWorkoutTest.append(leaSKTextField.text!)
@@ -85,9 +93,61 @@ class TestViewController: UIViewController {
             }
         }
         
-              
+        
         // dismiss view
         self.navigationController?.popViewController(animated: true)
     }
     
+    
+    @objc func doneButtonClicked(_ sender: UITextField) {
+            switch sender {
+            case leaSKTextField:
+                malekSKTextField.becomeFirstResponder()
+                break
+            case malekSKTextField:
+                leaPJKTextField.becomeFirstResponder()
+                break
+            case leaPJKTextField:
+                malekPJKTextField.becomeFirstResponder()
+                break
+            case malekPJKTextField:
+                leaPKTextField.becomeFirstResponder()
+                break
+            case leaPKTextField:
+                malekPKTextField.becomeFirstResponder()
+                break
+            case malekPKTextField:
+                leaPJTextField.becomeFirstResponder()
+                break
+            case leaPJTextField:
+                malekPJTextField.becomeFirstResponder()
+                break
+            case malekPJTextField:
+                leaJSQTextField.becomeFirstResponder()
+                break
+            case leaJSQTextField:
+                malekJSQTextField.becomeFirstResponder()
+                break
+            case malekJSQTextField:
+                leaSJTextField.becomeFirstResponder()
+                break
+            case leaSJTextField:
+                malekSJTextField.becomeFirstResponder()
+                break
+            case malekSJTextField:
+                leaPUJKTextField.becomeFirstResponder()
+                break
+            case leaPUJKTextField:
+                malekPUJKTextField.becomeFirstResponder()
+                break
+            case malekPUJKTextField:
+                leaPMCTextField.becomeFirstResponder()
+                break
+            case leaPMCTextField:
+                malekPMCTextField.becomeFirstResponder()
+                break
+            default:
+                sender.resignFirstResponder()
+            }
+    }
 }

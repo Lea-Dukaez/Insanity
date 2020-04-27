@@ -5,6 +5,7 @@ target 'Insanity' do
   use_frameworks!
 
   # Pods for Insanity
+  pod 'IQKeyboardManagerSwift', '6.5.0'
   
   # Pod for Cloud Firestore
   pod 'Firebase/Firestore'
