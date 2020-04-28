@@ -9,11 +9,15 @@
 import UIKit
 import Firebase
 
-class TestViewController: UIViewController, UITextFieldDelegate {
+class TestViewController: UIViewController {
     
     let db = Firestore.firestore()
     var leaWorkoutTest = [String]()
     var malekWorkoutTest = [String]()
+    var textFieldArray = [UITextField]()
+    let alert = UIAlertController(title: "Incomplet", message: "Merci de remplir tous les exercices", preferredStyle: UIAlertController.Style.alert)
+    
+    @IBOutlet weak var validateButton: UIButton!
     
     @IBOutlet weak var leaSKTextField: UITextField!
     @IBOutlet weak var malekSKTextField: UITextField!
@@ -32,11 +36,12 @@ class TestViewController: UIViewController, UITextFieldDelegate {
     @IBOutlet weak var leaPMCTextField: UITextField!
     @IBOutlet weak var malekPMCTextField: UITextField!
     
-    var textFieldArray = [UITextField]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        validateButton.isEnabled = false
+
         textFieldArray = [leaSKTextField, malekSKTextField, leaPJKTextField, malekPJKTextField, leaPKTextField, malekPKTextField, leaPJTextField, malekPJTextField, leaJSQTextField, malekJSQTextField, leaSJTextField, malekSJTextField, leaPUJKTextField, malekPUJKTextField, leaPMCTextField, malekPMCTextField]
 
         for textField in textFieldArray {
@@ -46,108 +51,100 @@ class TestViewController: UIViewController, UITextFieldDelegate {
         
     }
     
+    @IBAction func FallbackButtonTapped(_ sender: UIButton) {
+        showAlert()
+    }
+    
     @IBAction func validatePressed(_ sender: UIButton) {
-        // Lea Data
-        leaWorkoutTest.append(leaSKTextField.text!)
-        leaWorkoutTest.append(leaPJKTextField.text!)
-        leaWorkoutTest.append(leaPKTextField.text!)
-        leaWorkoutTest.append(leaPJTextField.text!)
-        leaWorkoutTest.append(leaJSQTextField.text!)
-        leaWorkoutTest.append(leaSJTextField.text!)
-        leaWorkoutTest.append(leaPUJKTextField.text!)
-        leaWorkoutTest.append(leaPMCTextField.text!)
-        // Malek Data
-        malekWorkoutTest.append(malekSKTextField.text!)
-        malekWorkoutTest.append(malekPJKTextField.text!)
-        malekWorkoutTest.append(malekPKTextField.text!)
-        malekWorkoutTest.append(malekPJTextField.text!)
-        malekWorkoutTest.append(malekJSQTextField.text!)
-        malekWorkoutTest.append(malekSJTextField.text!)
-        malekWorkoutTest.append(malekPUJKTextField.text!)
-        malekWorkoutTest.append(malekPMCTextField.text!)
         
-        // Add a new document in Firestore for Lea
-        db.collection(K.FStore.collectionName).addDocument(data: [
-            K.FStore.userField: K.FStore.leaUser,
-            K.FStore.testField: leaWorkoutTest,
-            K.FStore.dateField: Timestamp(date: Date())
-        ]) { error in
-            if let err = error {
-                print("Error adding document: \(err)")
-            } else {
-                print("Document added!")
-                self.leaWorkoutTest = [String]()
+        let allHaveText = textFieldArray.allSatisfy { $0.text?.isEmpty == false }
+        
+        if allHaveText {
+            for textField in textFieldArray {
+                if textFieldArray.firstIndex(where: {$0 == textField})! % 2 == 0 {
+                    leaWorkoutTest.append(textField.text!)
+                } else {
+                    malekWorkoutTest.append(textField.text!)
+                }
             }
-        }
-        // Add a new document in Firestore for Malek
-        db.collection(K.FStore.collectionName).addDocument(data: [
-            K.FStore.userField: K.FStore.malekUser,
-            K.FStore.testField: malekWorkoutTest,
-            K.FStore.dateField: Timestamp(date: Date())
-        ]) { error in
-            if let err = error {
-                print("Error adding document: \(err)")
-            } else {
-                print("Document added!")
-                self.malekWorkoutTest = [String]()
+            // Add a new document in Firestore for Lea
+            db.collection(K.FStore.collectionName).addDocument(data: [
+                K.FStore.userField: K.FStore.leaUser,
+                K.FStore.testField: leaWorkoutTest,
+                K.FStore.dateField: Timestamp(date: Date())
+            ]) { error in
+                if let err = error {
+                    print("Error adding document: \(err)")
+                } else {
+                    print("Document added!")
+                    self.leaWorkoutTest = [String]()
+                }
             }
+            // Add a new document in Firestore for Malek
+            db.collection(K.FStore.collectionName).addDocument(data: [
+                K.FStore.userField: K.FStore.malekUser,
+                K.FStore.testField: malekWorkoutTest,
+                K.FStore.dateField: Timestamp(date: Date())
+            ]) { error in
+                if let err = error {
+                    print("Error adding document: \(err)")
+                } else {
+                    print("Document added!")
+                    self.malekWorkoutTest = [String]()
+                }
+            }
+            // dismiss view
+            self.navigationController?.popViewController(animated: true)
+            
+        } else {
+            showAlert()
         }
-        
-        
-        // dismiss view
-        self.navigationController?.popViewController(animated: true)
+    }
+    
+    
+    func showAlert() {
+        self.present(alert, animated: true, completion: nil)
+        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.dismissAlert), userInfo: nil, repeats: false)
+    }
+    
+    @objc func dismissAlert() {
+        self.dismiss(animated: true, completion: nil)
     }
     
     
     @objc func doneButtonClicked(_ sender: UITextField) {
-            switch sender {
-            case leaSKTextField:
-                malekSKTextField.becomeFirstResponder()
-                break
-            case malekSKTextField:
-                leaPJKTextField.becomeFirstResponder()
-                break
-            case leaPJKTextField:
-                malekPJKTextField.becomeFirstResponder()
-                break
-            case malekPJKTextField:
-                leaPKTextField.becomeFirstResponder()
-                break
-            case leaPKTextField:
-                malekPKTextField.becomeFirstResponder()
-                break
-            case malekPKTextField:
-                leaPJTextField.becomeFirstResponder()
-                break
-            case leaPJTextField:
-                malekPJTextField.becomeFirstResponder()
-                break
-            case malekPJTextField:
-                leaJSQTextField.becomeFirstResponder()
-                break
-            case leaJSQTextField:
-                malekJSQTextField.becomeFirstResponder()
-                break
-            case malekJSQTextField:
-                leaSJTextField.becomeFirstResponder()
-                break
-            case leaSJTextField:
-                malekSJTextField.becomeFirstResponder()
-                break
-            case malekSJTextField:
-                leaPUJKTextField.becomeFirstResponder()
-                break
-            case leaPUJKTextField:
-                malekPUJKTextField.becomeFirstResponder()
-                break
-            case malekPUJKTextField:
-                leaPMCTextField.becomeFirstResponder()
-                break
-            case leaPMCTextField:
-                malekPMCTextField.becomeFirstResponder()
-                break
-            default:
-                sender.resignFirstResponder()
+        if sender == malekPMCTextField {
+            sender.resignFirstResponder()
+        } else {
+            if let senderIndex = textFieldArray.firstIndex(where: {$0 == sender}) {
+                textFieldArray[senderIndex+1].becomeFirstResponder()
             }
+        }
+    }
+    
+}
+
+extension TestViewController: UITextFieldDelegate {
+
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
+
+        if text.isEmpty {
+            validateButton.isEnabled = false
+            return true
+        } else {
+            if let _ = Int(string) {
+            } else {
+                validateButton.isEnabled = false
+                return false
+            }
+            if text.count > 3 {
+                return false
+            }
+        }
+
+        validateButton.isEnabled = true
+        return true
     }
 }

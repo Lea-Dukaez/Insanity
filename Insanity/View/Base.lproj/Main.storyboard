@@ -179,6 +179,15 @@
                                     </imageView>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LAn-73-ZuI" userLabel="FallBack Button">
+                                <rect key="frame" x="0.0" y="792" width="414" height="60"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="LiK-2j-REe"/>
+                                </constraints>
+                                <connections>
+                                    <action selector="FallbackButtonTapped:" destination="TnM-Vq-Ygn" eventType="touchUpInside" id="4iE-fL-PBU"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mzz-sj-cZC">
                                 <rect key="frame" x="0.0" y="792" width="414" height="60"/>
                                 <constraints>
@@ -289,7 +298,7 @@
                                                                 </constraints>
                                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
-                                                                <textInputTraits key="textInputTraits" keyboardType="phonePad" returnKeyType="next"/>
+                                                                <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="next"/>
                                                             </textField>
                                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="O5Y-3T-dch">
                                                                 <rect key="frame" x="0.0" y="70" width="100" height="60"/>
@@ -374,7 +383,7 @@
                                                                 </constraints>
                                                                 <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
-                                                                <textInputTraits key="textInputTraits" keyboardType="emailAddress" returnKeyType="next"/>
+                                                                <textInputTraits key="textInputTraits" keyboardType="numberPad" returnKeyType="next"/>
                                                             </textField>
                                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="Qcs-rv-Mg5">
                                                                 <rect key="frame" x="0.0" y="70" width="100" height="60"/>
@@ -475,12 +484,15 @@
                             <constraint firstItem="xG5-MF-dG6" firstAttribute="top" secondItem="209-wX-GdD" secondAttribute="bottom" constant="20" id="4Mb-na-CdZ"/>
                             <constraint firstItem="qpT-it-xyS" firstAttribute="trailing" secondItem="xG5-MF-dG6" secondAttribute="trailing" constant="10" id="6Rd-IW-Xoj"/>
                             <constraint firstItem="mzz-sj-cZC" firstAttribute="top" secondItem="xG5-MF-dG6" secondAttribute="bottom" constant="20" id="6cc-Ua-8dE"/>
+                            <constraint firstItem="LAn-73-ZuI" firstAttribute="leading" secondItem="qpT-it-xyS" secondAttribute="leading" id="7ir-wy-I48"/>
                             <constraint firstItem="mzz-sj-cZC" firstAttribute="trailing" secondItem="qpT-it-xyS" secondAttribute="trailing" id="FJm-aV-Vdh"/>
                             <constraint firstItem="mzz-sj-cZC" firstAttribute="leading" secondItem="qpT-it-xyS" secondAttribute="leading" id="gAO-pT-quN"/>
                             <constraint firstItem="qpT-it-xyS" firstAttribute="trailing" secondItem="209-wX-GdD" secondAttribute="trailing" constant="10" id="hJY-lG-LvN"/>
                             <constraint firstItem="qpT-it-xyS" firstAttribute="bottom" secondItem="mzz-sj-cZC" secondAttribute="bottom" constant="10" id="jio-fT-8dI"/>
                             <constraint firstItem="209-wX-GdD" firstAttribute="leading" secondItem="qpT-it-xyS" secondAttribute="leading" constant="10" id="yWp-jg-HJm"/>
+                            <constraint firstItem="qpT-it-xyS" firstAttribute="trailing" secondItem="LAn-73-ZuI" secondAttribute="trailing" id="ygr-BI-lqy"/>
                             <constraint firstItem="209-wX-GdD" firstAttribute="top" secondItem="qpT-it-xyS" secondAttribute="top" id="z4E-Z6-hvA"/>
+                            <constraint firstItem="qpT-it-xyS" firstAttribute="bottom" secondItem="LAn-73-ZuI" secondAttribute="bottom" constant="10" id="zPu-c2-1dJ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="qpT-it-xyS"/>
                     </view>
@@ -502,6 +514,7 @@
                         <outlet property="malekPUJKTextField" destination="ZgE-1w-kdH" id="zoR-1B-edc"/>
                         <outlet property="malekSJTextField" destination="Ew5-AA-kHc" id="D1f-EH-MP0"/>
                         <outlet property="malekSKTextField" destination="pUc-AU-Uj5" id="csB-fj-hvM"/>
+                        <outlet property="validateButton" destination="mzz-sj-cZC" id="jpq-BG-C3a"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kd1-Uo-hr4" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>

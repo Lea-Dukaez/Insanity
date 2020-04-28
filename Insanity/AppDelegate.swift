@@ -18,10 +18,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Override point for customization after application launch.
         FirebaseApp.configure()
         IQKeyboardManager.shared.enable = true
-        IQKeyboardManager.shared.toolbarManageBehaviour = .byTag
         IQKeyboardManager.shared.toolbarDoneBarButtonItemText = "Next"
         IQKeyboardManager.shared.previousNextDisplayMode = .alwaysHide
+        IQKeyboardManager.shared.keyboardDistanceFromTextField = 20
+        IQKeyboardManager.shared.shouldResignOnTouchOutside = true
         
+    
         return true
     }
 
