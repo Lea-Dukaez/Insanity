@@ -22,6 +22,7 @@ class ProgressViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var userImage: UIImageView!
     @IBOutlet weak var userLabel: UILabel!
+    @IBOutlet weak var msgLabel: UILabel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -29,14 +30,14 @@ class ProgressViewController: UIViewController {
         userImage.image = UIImage(named: avatarImg)
         
         loadWorkoutData()
-
     
     }
     
+    
     func loadWorkoutData() {
-
+        
         dataWorkoutTest = []
-
+        
         // retrieve data for Malek
         if userName == K.userCell.malekLabel {
             db.collection(K.FStore.collectionName)
@@ -46,17 +47,25 @@ class ProgressViewController: UIViewController {
                     if let err = error {
                         print("Error getting documents: \(err)")
                     } else {
-                        if let snapshotDocuments = querySnapshot?.documents {
-                            for doc in snapshotDocuments {
-                                let data = doc.data()
-                                if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
-                                    let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
-                                    self.dataWorkoutTest.append(newWorkoutTest)
-                                    DispatchQueue.main.async {
-                                        self.tableView.dataSource = self
-                                        self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
-                                        self.tableView.reloadData()
-                                        print(self.dataWorkoutTest)
+                        if querySnapshot!.isEmpty {
+                            self.showMsg()
+                            print("data empty : do sport !")
+                        } else {
+                            self.dismissMsg()
+                            // documents exist in firestore
+                            if let snapshotDocuments = querySnapshot?.documents {
+                                for doc in snapshotDocuments {
+                                    let data = doc.data()
+                                    if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
+                                        let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
+                                        self.dataWorkoutTest.append(newWorkoutTest)
+                                        // when data is collected, create the tableview
+                                        DispatchQueue.main.async {
+                                            self.tableView.dataSource = self
+                                            self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
+                                            self.tableView.reloadData()
+                                            print(self.dataWorkoutTest)
+                                        }
                                     }
                                 }
                             }
@@ -72,26 +81,32 @@ class ProgressViewController: UIViewController {
                     if let err = error {
                         print("Error getting documents: \(err)")
                     } else {
-                        if let snapshotDocuments = querySnapshot?.documents {
-                            for doc in snapshotDocuments {
-                                let data = doc.data()
-                                if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
-                                    let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
-                                    self.dataWorkoutTest.append(newWorkoutTest)
-                                    DispatchQueue.main.async {
-                                        self.tableView.dataSource = self
-                                        self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
-                                        self.tableView.reloadData()
-                                        print(self.dataWorkoutTest)
+                        if querySnapshot!.isEmpty {
+                            self.showMsg()
+                            print("data empty : do sport !")
+                        } else {
+                            self.dismissMsg()
+                            if let snapshotDocuments = querySnapshot?.documents {
+                                for doc in snapshotDocuments {
+                                    let data = doc.data()
+                                    if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
+                                        let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
+                                        self.dataWorkoutTest.append(newWorkoutTest)
+                                        DispatchQueue.main.async {
+                                            self.tableView.dataSource = self
+                                            self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
+                                            self.tableView.reloadData()
+                                            print(self.dataWorkoutTest)
+                                        }
                                     }
                                 }
                             }
                         }
-
                     }
                 }
             }
     }
+    
     
     func Percent(old: String, new: String, cellForPercent: WorkoutCell) -> String {
         let oldValue = Double(old)!
@@ -108,6 +123,7 @@ class ProgressViewController: UIViewController {
         }
     }
     
+    
     func dateString(timeStampDate: Timestamp) -> String {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "MMM d"
@@ -115,6 +131,14 @@ class ProgressViewController: UIViewController {
         let dateString = dateFormatter.string(from: date)
         
         return dateString
+    }
+    
+    func showMsg() {
+        msgLabel.textColor = .white
+    }
+    
+    func dismissMsg() {
+        msgLabel.textColor = .clear
     }
     
     

@@ -16,6 +16,8 @@ class TestViewController: UIViewController {
     var malekWorkoutTest = [String]()
     var textFieldArray = [UITextField]()
     let alert = UIAlertController(title: "Incomplet", message: "Merci de remplir tous les exercices", preferredStyle: UIAlertController.Style.alert)
+    let forbiddenNumber = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"]
+
     
     @IBOutlet weak var validateButton: UIButton!
     
@@ -100,11 +102,13 @@ class TestViewController: UIViewController {
             showAlert()
         }
     }
-    
+
     
     func showAlert() {
-        self.present(alert, animated: true, completion: nil)
-        Timer.scheduledTimer(timeInterval: 2.0, target: self, selector: #selector(self.dismissAlert), userInfo: nil, repeats: false)
+        self.present(alert, animated: true) {
+                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissAlert))
+            self.alert.view.superview?.subviews[0].addGestureRecognizer(tapGesture)
+        }
     }
     
     @objc func dismissAlert() {
@@ -125,7 +129,7 @@ class TestViewController: UIViewController {
 }
 
 extension TestViewController: UITextFieldDelegate {
-
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
@@ -135,6 +139,11 @@ extension TestViewController: UITextFieldDelegate {
             return true
         } else {
             if let _ = Int(string) {
+                for fNb in forbiddenNumber {
+                    if text.count == 2 && text == fNb{
+                        return false
+                    }
+                }
             } else {
                 validateButton.isEnabled = false
                 return false

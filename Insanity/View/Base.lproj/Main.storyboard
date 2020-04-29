@@ -118,6 +118,12 @@
                                     <constraint firstAttribute="trailing" secondItem="Bf5-SF-pHn" secondAttribute="trailing" constant="20" id="YgE-60-4TS"/>
                                 </constraints>
                             </view>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No data recorded.  Start exercise and come back !" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="VRV-1k-e7D">
+                                <rect key="frame" x="0.0" y="248" width="414" height="614"/>
+                                <fontDescription key="fontDescription" type="system" weight="thin" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="B3j-0h-hdS">
                                 <rect key="frame" x="0.0" y="248" width="414" height="614"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -128,15 +134,20 @@
                             <constraint firstItem="B3j-0h-hdS" firstAttribute="trailing" secondItem="glq-rp-bN8" secondAttribute="trailing" id="3R6-FW-KiE"/>
                             <constraint firstItem="B3j-0h-hdS" firstAttribute="leading" secondItem="glq-rp-bN8" secondAttribute="leading" id="I0r-UV-dN7"/>
                             <constraint firstItem="JhU-vw-9lO" firstAttribute="leading" secondItem="glq-rp-bN8" secondAttribute="leading" id="PbA-iz-uN2"/>
+                            <constraint firstAttribute="trailing" secondItem="VRV-1k-e7D" secondAttribute="trailing" id="Ytj-ou-Spd"/>
                             <constraint firstItem="JhU-vw-9lO" firstAttribute="top" secondItem="glq-rp-bN8" secondAttribute="top" id="bTW-BJ-Swg"/>
+                            <constraint firstItem="VRV-1k-e7D" firstAttribute="top" secondItem="JhU-vw-9lO" secondAttribute="bottom" constant="40" id="c2n-4b-PFx"/>
                             <constraint firstItem="B3j-0h-hdS" firstAttribute="bottom" secondItem="glq-rp-bN8" secondAttribute="bottom" id="dbK-8N-Ffs"/>
                             <constraint firstItem="B3j-0h-hdS" firstAttribute="top" secondItem="JhU-vw-9lO" secondAttribute="bottom" constant="40" id="dt2-yO-Iuq"/>
+                            <constraint firstItem="glq-rp-bN8" firstAttribute="bottom" secondItem="VRV-1k-e7D" secondAttribute="bottom" id="gA0-rS-7jI"/>
                             <constraint firstItem="JhU-vw-9lO" firstAttribute="trailing" secondItem="glq-rp-bN8" secondAttribute="trailing" id="nxa-yn-AmP"/>
+                            <constraint firstItem="VRV-1k-e7D" firstAttribute="leading" secondItem="glq-rp-bN8" secondAttribute="leading" id="yWi-yA-A6B"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="glq-rp-bN8"/>
                     </view>
                     <navigationItem key="navigationItem" id="WrI-O4-BLw"/>
                     <connections>
+                        <outlet property="msgLabel" destination="VRV-1k-e7D" id="d1C-xX-zKM"/>
                         <outlet property="tableView" destination="B3j-0h-hdS" id="BDy-3U-APd"/>
                         <outlet property="userImage" destination="LiN-xl-ger" id="ouA-nN-KTk"/>
                         <outlet property="userLabel" destination="Bf5-SF-pHn" id="0BJ-3B-pE5"/>
