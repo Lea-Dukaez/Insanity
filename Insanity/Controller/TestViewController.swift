@@ -42,19 +42,14 @@ class TestViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        validateButton.isEnabled = false
-
         textFieldArray = [leaSKTextField, malekSKTextField, leaPJKTextField, malekPJKTextField, leaPKTextField, malekPKTextField, leaPJTextField, malekPJTextField, leaJSQTextField, malekJSQTextField, leaSJTextField, malekSJTextField, leaPUJKTextField, malekPUJKTextField, leaPMCTextField, malekPMCTextField]
 
         for textField in textFieldArray {
             textField.delegate = self
+            textField.smartInsertDeleteType = UITextSmartInsertDeleteType.no
             textField.keyboardToolbar.doneBarButton.setTarget(self, action: #selector(doneButtonClicked))
         }
         
-    }
-    
-    @IBAction func FallbackButtonTapped(_ sender: UIButton) {
-        showAlert()
     }
     
     @IBAction func validatePressed(_ sender: UIButton) {
@@ -131,29 +126,30 @@ class TestViewController: UIViewController {
 extension TestViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
+
         let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
 
-        if text.isEmpty {
-            validateButton.isEnabled = false
-            return true
-        } else {
-            if let _ = Int(string) {
-                for fNb in forbiddenNumber {
-                    if text.count == 2 && text == fNb{
-                        return false
-                    }
-                }
-            } else {
-                validateButton.isEnabled = false
-                return false
-            }
-            if text.count > 3 {
-                return false
-            }
+        //Prevent "0" characters to be followed by other number
+        if forbiddenNumber.contains(text) {
+            return false
         }
 
-        validateButton.isEnabled = true
+        //Limit the character count to 3.
+        if ((textField.text!) + string).count > 3 {
+            return false
+        }
+
+        //Only allow numbers. No Copy-Paste text values.
+        let allowedCharacterSet = CharacterSet.init(charactersIn: "0123456789")
+        let textCharacterSet = CharacterSet.init(charactersIn: textField.text! + string)
+        if !allowedCharacterSet.isSuperset(of: textCharacterSet) {
+            return false
+        }
         return true
+        
+
     }
+    
 }
+
+
