@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		0F764AF46A0531FF3F017AC4 /* Pods_Insanity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBD0E847B193FD1255230848 /* Pods_Insanity.framework */; };
+		DB4454F9245B186D008D4398 /* PodiumViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB4454F8245B186D008D4398 /* PodiumViewController.swift */; };
 		DB69838D24543B0C00B84087 /* WorkoutCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB69838B24543B0C00B84087 /* WorkoutCell.swift */; };
 		DB69838E24543B0C00B84087 /* WorkoutCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = DB69838C24543B0C00B84087 /* WorkoutCell.xib */; };
 		DB69839024543DCE00B84087 /* Workout.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB69838F24543DCE00B84087 /* Workout.swift */; };
@@ -28,6 +29,7 @@
 /* Begin PBXFileReference section */
 		18923745523456280EA15E20 /* Pods-Insanity.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Insanity.release.xcconfig"; path = "Target Support Files/Pods-Insanity/Pods-Insanity.release.xcconfig"; sourceTree = "<group>"; };
 		775272C35787601C39137079 /* Pods-Insanity.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Insanity.debug.xcconfig"; path = "Target Support Files/Pods-Insanity/Pods-Insanity.debug.xcconfig"; sourceTree = "<group>"; };
+		DB4454F8245B186D008D4398 /* PodiumViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PodiumViewController.swift; sourceTree = "<group>"; };
 		DB69838B24543B0C00B84087 /* WorkoutCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutCell.swift; sourceTree = "<group>"; };
 		DB69838C24543B0C00B84087 /* WorkoutCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WorkoutCell.xib; sourceTree = "<group>"; };
 		DB69838F24543DCE00B84087 /* Workout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workout.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 				DBD793292452265D009358F8 /* WelcomeViewController.swift */,
 				DB989B382452F730009F2C6F /* TestViewController.swift */,
 				DB989B3A2452F740009F2C6F /* ProgressViewController.swift */,
+				DB4454F8245B186D008D4398 /* PodiumViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -262,6 +265,7 @@
 			files = (
 				DB989B372452F085009F2C6F /* Constants.swift in Sources */,
 				DBD7932A2452265D009358F8 /* WelcomeViewController.swift in Sources */,
+				DB4454F9245B186D008D4398 /* PodiumViewController.swift in Sources */,
 				DB989B342452EE74009F2C6F /* UserCell.swift in Sources */,
 				DB989B3B2452F740009F2C6F /* ProgressViewController.swift in Sources */,
 				DBD793262452265D009358F8 /* AppDelegate.swift in Sources */,
@@ -414,13 +418,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MU9Q6F5GDR;
+				DEVELOPMENT_TEAM = U4MJCZ5RFJ;
 				INFOPLIST_FILE = Insanity/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.malfouf.Insanity;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lea-dk.Insanity";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -433,13 +437,13 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = MU9Q6F5GDR;
+				DEVELOPMENT_TEAM = U4MJCZ5RFJ;
 				INFOPLIST_FILE = Insanity/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.malfouf.Insanity;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.lea-dk.Insanity";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

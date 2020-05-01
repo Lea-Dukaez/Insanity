@@ -9,7 +9,7 @@
 import Foundation
 import Firebase
 
-struct WorkoutTest {
+struct Workout {
     let user: String
     let workOutResult: [String]
     let date: Timestamp

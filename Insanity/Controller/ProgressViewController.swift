@@ -13,8 +13,7 @@ class ProgressViewController: UIViewController {
         
     let db = Firestore.firestore()
     
-    var dataWorkoutTest: [WorkoutTest] = []
-//    var malekDataWorkoutTest: [WorkoutTest] = []
+    var dataWorkoutTest: [Workout] = []
     
     var userName = K.userCell.malekLabel
     var avatarImg = K.userCell.malekAvatar
@@ -49,7 +48,6 @@ class ProgressViewController: UIViewController {
                     } else {
                         if querySnapshot!.isEmpty {
                             self.showMsg()
-                            print("data empty : do sport !")
                         } else {
                             self.dismissMsg()
                             // documents exist in firestore
@@ -57,14 +55,13 @@ class ProgressViewController: UIViewController {
                                 for doc in snapshotDocuments {
                                     let data = doc.data()
                                     if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
-                                        let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
-                                        self.dataWorkoutTest.append(newWorkoutTest)
+                                        let newWorkout = Workout(user: userTested, workOutResult: testResult, date: testDate) 
+                                        self.dataWorkoutTest.append(newWorkout)
                                         // when data is collected, create the tableview
                                         DispatchQueue.main.async {
                                             self.tableView.dataSource = self
                                             self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
                                             self.tableView.reloadData()
-                                            print(self.dataWorkoutTest)
                                         }
                                     }
                                 }
@@ -83,20 +80,18 @@ class ProgressViewController: UIViewController {
                     } else {
                         if querySnapshot!.isEmpty {
                             self.showMsg()
-                            print("data empty : do sport !")
                         } else {
                             self.dismissMsg()
                             if let snapshotDocuments = querySnapshot?.documents {
                                 for doc in snapshotDocuments {
                                     let data = doc.data()
                                     if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
-                                        let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
-                                        self.dataWorkoutTest.append(newWorkoutTest)
+                                        let newWorkout = Workout(user: userTested, workOutResult: testResult, date: testDate)
+                                        self.dataWorkoutTest.append(newWorkout)
                                         DispatchQueue.main.async {
                                             self.tableView.dataSource = self
                                             self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
                                             self.tableView.reloadData()
-                                            print(self.dataWorkoutTest)
                                         }
                                     }
                                 }
