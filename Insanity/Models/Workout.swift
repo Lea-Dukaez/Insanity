@@ -10,7 +10,7 @@ import Foundation
 import Firebase
 
 struct Workout {
-    let user: String
-    let workOutResult: [String]
+    let userID: Int
+    let workOutResult: [Double]
     let date: Timestamp
 }

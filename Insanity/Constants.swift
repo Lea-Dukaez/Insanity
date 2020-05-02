@@ -18,17 +18,9 @@ struct K {
     struct userCell {
         static let userCellIdentifier = "myReusableCell"
         static let userCellNibName = "UserCell"
-        static let leaAvatar = "LeaAvatar"
-        static let malekAvatar = "MalekAvatar"
-        static let mathAvatar = "MathAvatar"
-        static let louxAvatar = "LouxAvatar"
-        static let leaLabel = "Lea, fit Courgette"
-        static let malekLabel = "Malfouf, le Nul"
-        static let mathLabel = "Mathou, super Blonde"
-        static let louxLabel = "Loux, nihon Kyojin"
+        static let noOpponentAvatar = "noOpponentAvatar"
         static let usersAvatar = ["MalekAvatar", "LeaAvatar", "MathAvatar", "LouxAvatar"]
         static let usersLabel = ["Malfouf, le Nul", "Lea, fit Courgette", "Mathou, super Blonde", "Loux, nihon Kyojin"]
-
     }
     
     struct workout {
@@ -38,15 +30,14 @@ struct K {
     }
     
     struct FStore {
-        static let collectionName = "workoutTest"
+        static let collectionTestName = "workoutTests"
         static let dateField = "date"
-        static let userField = "user"
-        static let testField = "testArray"
-        static let malekUser = "Malek"
-        static let leaUser = "Lea"
-        static let mathUser = "Math"
-        static let louxUser = "Loux"
-        static let users = ["Malek", "Lea", "Math", "Loux"] // same as leaUser and malekUser and mathUser in array
+        static let idField = "id"
+        static let testField = "testResults"
+        static let collectionUsersName = "users"
+        static let nameField = "name"
+        static let maxField  = "max"
+        static let users = ["Malek", "Lea", "Math", "Loux"]
     }
     
 

@@ -12,8 +12,8 @@ import Firebase
 class TestViewController: UIViewController {
     
     let db = Firestore.firestore()
-    var userSelected = K.FStore.users[0]
-    var listWorkoutTest = [String]()
+    var userSelected = 0
+    var listWorkoutTest = [Double]()
     var textFieldArray = [UITextField]()
     let alert = UIAlertController(title: "Incomplet", message: "Merci de remplir tous les exercices", preferredStyle: UIAlertController.Style.alert)
     let forbiddenNumber = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"]
@@ -53,12 +53,12 @@ class TestViewController: UIViewController {
         
         if allHaveText {
             for textField in textFieldArray {
-                listWorkoutTest.append(textField.text!)
+                listWorkoutTest.append(Double(textField.text!)!)
             }
             
             // Add a new document in Firestore for userSelected
-            db.collection(K.FStore.collectionName).addDocument(data: [
-                K.FStore.userField: userSelected,
+            db.collection(K.FStore.collectionTestName).addDocument(data: [
+                K.FStore.idField: userSelected,
                 K.FStore.testField: listWorkoutTest,
                 K.FStore.dateField: Timestamp(date: Date())
             ]) { error in
@@ -66,7 +66,8 @@ class TestViewController: UIViewController {
                     print("Error adding document: \(err)")
                 } else {
                     print("Document added!")
-                    self.listWorkoutTest = [String]()
+                    self.majMax(listTest: self.listWorkoutTest)
+                    self.listWorkoutTest = [Double]()
                 }
             }
             // dismiss view
@@ -98,6 +99,48 @@ class TestViewController: UIViewController {
                 textFieldArray[senderIndex+1].becomeFirstResponder()
             }
         }
+    }
+    
+    func majMax(listTest: [Double]) {
+        var newMaxValues: [Double] = []
+        let userRef = db.collection(K.FStore.collectionUsersName).document(String(userSelected))
+        
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let userDocument: DocumentSnapshot
+            do {
+             try userDocument = transaction.getDocument(userRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
+            guard let oldMaxValues = userDocument.data()?[K.FStore.maxField] as? [Double] else {
+                let error = NSError(
+                    domain: "AppErrorDomain",
+                    code: -1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: "Unable to retrieve maxValue from snapshot \(userDocument)"
+                    ]
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            
+            for index in 0...oldMaxValues.count-1 {
+                newMaxValues.append(max(listTest[index], oldMaxValues[index]))
+            }
+            
+            transaction.updateData([K.FStore.maxField: newMaxValues], forDocument: userRef)
+            return newMaxValues // instead of nil ??
+            
+        }) { (object, error) in
+            if let err = error {
+                print("Transaction failed: \(err)")
+            } else {
+                print("Transaction successfully committed!")
+            }
+        }
+        
     }
     
 }
@@ -166,6 +209,37 @@ extension TestViewController: UIPickerViewDelegate {
     
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        userSelected = K.FStore.users[row]
+        userSelected = row
     }
 }
+
+
+//
+//
+//        db.collection(K.FStore.collectionUsersName).document(String(userSelected))
+//            .getDocument { (document, error) in
+//                if let document = document, document.exists {
+//                    if let data = document.data() {
+//                        if let maxValues = data[K.FStore.maxField] as? [Double] {
+//                            for index in 0...maxValues.count-1 {
+//                                newMax.append(max(listTest[index], maxValues[index]))
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    print("Document does not exist")
+//                }
+//        }
+        
+
+//        // set a Userdocument in collection "users" with new max data
+//        db.collection(K.FStore.collectionUsersName).document(String(userSelected))
+//            .setData([
+//            K.FStore.maxField:[]
+//        ]) { err in
+//            if let err = err {
+//                print("Error writing document: \(err)")
+//            } else {
+//                print("Document successfully written!")
+//            }
+//        }
