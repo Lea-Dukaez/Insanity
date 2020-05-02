@@ -27,6 +27,7 @@ class ProgressViewController: UIViewController {
         super.viewDidLoad()
         userLabel.text = userName
         userImage.image = UIImage(named: avatarImg)
+    
         
         loadWorkoutData()
     
@@ -36,13 +37,13 @@ class ProgressViewController: UIViewController {
     func loadWorkoutData() {
         
         dataWorkoutTest = []
-        
-        // retrieve data for Malek
-        if userName == K.userCell.malekLabel {
+        if let indexUser = K.userCell.usersLabel.lastIndex(of: userName) {
+            let user = K.FStore.users[indexUser]
+            
             db.collection(K.FStore.collectionName)
-                .order(by: K.FStore.dateField, descending: true).limit(to: 2)
-                .whereField(K.FStore.userField, isEqualTo: K.FStore.malekUser)
-                .getDocuments() { (querySnapshot, error) in
+                .order(by:  K.FStore.dateField, descending: true).limit(to: 2)
+                .whereField(K.FStore.userField, isEqualTo: user)
+                .getDocuments { (querySnapshot, error) in
                     if let err = error {
                         print("Error getting documents: \(err)")
                     } else {
@@ -50,57 +51,29 @@ class ProgressViewController: UIViewController {
                             self.showMsg()
                         } else {
                             self.dismissMsg()
-                            // documents exist in firestore
-                            if let snapshotDocuments = querySnapshot?.documents {
-                                for doc in snapshotDocuments {
-                                    let data = doc.data()
-                                    if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
-                                        let newWorkout = Workout(user: userTested, workOutResult: testResult, date: testDate) 
-                                        self.dataWorkoutTest.append(newWorkout)
-                                        // when data is collected, create the tableview
-                                        DispatchQueue.main.async {
-                                            self.tableView.dataSource = self
-                                            self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
-                                            self.tableView.reloadData()
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-            }
-        } // retrieve data for Lea
-        else if userName == K.userCell.leaLabel {
-            db.collection(K.FStore.collectionName)
-                .order(by: K.FStore.dateField, descending: true).limit(to: 2)
-                .whereField(K.FStore.userField, isEqualTo: K.FStore.leaUser)
-                .getDocuments() { (querySnapshot, error) in
-                    if let err = error {
-                        print("Error getting documents: \(err)")
-                    } else {
-                        if querySnapshot!.isEmpty {
-                            self.showMsg()
-                        } else {
-                            self.dismissMsg()
+                            // documents exist in Firestore
                             if let snapshotDocuments = querySnapshot?.documents {
                                 for doc in snapshotDocuments {
                                     let data = doc.data()
                                     if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
                                         let newWorkout = Workout(user: userTested, workOutResult: testResult, date: testDate)
                                         self.dataWorkoutTest.append(newWorkout)
+                                        
+                                        // when data is collected, create the tableview
                                         DispatchQueue.main.async {
                                             self.tableView.dataSource = self
                                             self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
                                             self.tableView.reloadData()
+                                            
                                         }
                                     }
                                 }
-                            }
+                            } // fin if let snapshotDoc
                         }
-                    }
-                }
+                    } // fin else no error ...so access data possible
+                } // fin getDocument
             }
-    }
+        } // fonction loadData()
     
     
     func Percent(old: String, new: String, cellForPercent: WorkoutCell) -> String {
