@@ -131,23 +131,6 @@ class PodiumViewController: UIViewController {
             // case if dataPodium contains only empty array => dataPodiumFiltered.count = 0
             print("no data recorded")
         }
-        
-        
- 
-//            let maxScore = dataPodium.max { user1, user2  in user1[sportRow] < user2[sportRow] }
-//            let indexForPlayerWithMaxScore = dataPodium.indices.filter { dataPodium[$0] == maxScore! } // return array
-//            let index = indexForPlayerWithMaxScore[0]
-//
-//            topOneImage.image = UIImage(named: K.userCell.usersAvatar[index])
-//            topOneLabel.text = String(dataPodium[index][sportRow])
-//
-//
-//
-        
-//        let nonTopOne = dataPodium.filter { $0 != maxScore }
-//        let secMaxScore = dataPodium.max { user1, user2  in user1[sportRow] < user2[sportRow] }
-//        let indexForPlayerWithSecMaxScore = dataPodium.indices.filter { dataPodium[$0] == secMaxScore! } // return array
-        
     }
         
     
@@ -177,10 +160,7 @@ extension PodiumViewController: UIPickerViewDelegate {
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-//        workoutSelected = K.workout.workoutMove[row]
 
-//        print("array podium before sorted: \(self.dataPodium)")
-//        print(row)
         if row != 0 {
             updatePodium(sportRow: row-1)
         }

@@ -128,17 +128,14 @@ class TestViewController: UIViewController {
             
             // if it is the first time the user do the test
             if oldMaxValues.isEmpty {
-                print("testViewController, in maxValue func array empty: \(oldMaxValues), -> maxValue array = \(listTest)")
                 transaction.updateData([K.FStore.maxField: listTest], forDocument: userRef)
                 return nil
             } else {
                 for index in 0...oldMaxValues.count-1 {
                     newMaxValues.append(max(listTest[index], oldMaxValues[index]))
                 }
-                print("testViewController, in maxValue func array not empty: \(oldMaxValues), -> new maxValue array = \(newMaxValues)")
                 transaction.updateData([K.FStore.maxField: newMaxValues], forDocument: userRef)
-                print("Document maxValue up to date !")
-                return nil // instead of newMaxValues ??
+                return nil
             }
 
             
@@ -221,34 +218,3 @@ extension TestViewController: UIPickerViewDelegate {
         userSelected = row
     }
 }
-
-
-//
-//
-//        db.collection(K.FStore.collectionUsersName).document(String(userSelected))
-//            .getDocument { (document, error) in
-//                if let document = document, document.exists {
-//                    if let data = document.data() {
-//                        if let maxValues = data[K.FStore.maxField] as? [Double] {
-//                            for index in 0...maxValues.count-1 {
-//                                newMax.append(max(listTest[index], maxValues[index]))
-//                            }
-//                        }
-//                    }
-//                } else {
-//                    print("Document does not exist")
-//                }
-//        }
-        
-
-//        // set a Userdocument in collection "users" with new max data
-//        db.collection(K.FStore.collectionUsersName).document(String(userSelected))
-//            .setData([
-//            K.FStore.maxField:[]
-//        ]) { err in
-//            if let err = err {
-//                print("Error writing document: \(err)")
-//            } else {
-//                print("Document successfully written!")
-//            }
-//        }
