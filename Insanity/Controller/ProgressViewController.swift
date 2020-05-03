@@ -13,11 +13,10 @@ class ProgressViewController: UIViewController {
         
     let db = Firestore.firestore()
     
-    var dataWorkoutTest: [WorkoutTest] = []
-//    var malekDataWorkoutTest: [WorkoutTest] = []
+    var dataWorkoutTest: [Workout] = []
     
-    var userName = K.userCell.malekLabel
-    var avatarImg = K.userCell.malekAvatar
+    var userName = K.userCell.usersLabel[0]
+    var avatarImg = K.userCell.usersAvatar[0]
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var userImage: UIImageView!
@@ -30,88 +29,51 @@ class ProgressViewController: UIViewController {
         userImage.image = UIImage(named: avatarImg)
         
         loadWorkoutData()
-    
     }
     
     
     func loadWorkoutData() {
         
         dataWorkoutTest = []
-        
-        // retrieve data for Malek
-        if userName == K.userCell.malekLabel {
-            db.collection(K.FStore.collectionName)
-                .order(by: K.FStore.dateField, descending: true).limit(to: 2)
-                .whereField(K.FStore.userField, isEqualTo: K.FStore.malekUser)
-                .getDocuments() { (querySnapshot, error) in
+        if let userID = K.userCell.usersLabel.lastIndex(of: userName) {
+            db.collection(K.FStore.collectionTestName)
+                .order(by:  K.FStore.dateField, descending: true).limit(to: 2)
+                .whereField(K.FStore.idField, isEqualTo: userID)
+                .getDocuments { (querySnapshot, error) in
                     if let err = error {
                         print("Error getting documents: \(err)")
                     } else {
                         if querySnapshot!.isEmpty {
                             self.showMsg()
-                            print("data empty : do sport !")
                         } else {
                             self.dismissMsg()
-                            // documents exist in firestore
+                            // documents exist in Firestore
                             if let snapshotDocuments = querySnapshot?.documents {
                                 for doc in snapshotDocuments {
                                     let data = doc.data()
-                                    if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
-                                        let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
-                                        self.dataWorkoutTest.append(newWorkoutTest)
+                                    if let idTested = data[K.FStore.idField] as? Int, let testResult = data[K.FStore.testField] as? [Double], let testDate = data[K.FStore.dateField] as? Timestamp {
+                                        let newWorkout = Workout(userID: idTested, workOutResult: testResult, date: testDate)
+                                        self.dataWorkoutTest.append(newWorkout)
+                                        
                                         // when data is collected, create the tableview
                                         DispatchQueue.main.async {
                                             self.tableView.dataSource = self
                                             self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
                                             self.tableView.reloadData()
-                                            print(self.dataWorkoutTest)
+                                            
                                         }
                                     }
                                 }
-                            }
+                            } // fin if let snapshotDoc
                         }
-                    }
+                    } // fin else no error ...so access data possible
+                } // fin getDocument
             }
-        } // retrieve data for Lea
-        else if userName == K.userCell.leaLabel {
-            db.collection(K.FStore.collectionName)
-                .order(by: K.FStore.dateField, descending: true).limit(to: 2)
-                .whereField(K.FStore.userField, isEqualTo: K.FStore.leaUser)
-                .getDocuments() { (querySnapshot, error) in
-                    if let err = error {
-                        print("Error getting documents: \(err)")
-                    } else {
-                        if querySnapshot!.isEmpty {
-                            self.showMsg()
-                            print("data empty : do sport !")
-                        } else {
-                            self.dismissMsg()
-                            if let snapshotDocuments = querySnapshot?.documents {
-                                for doc in snapshotDocuments {
-                                    let data = doc.data()
-                                    if let userTested = data[K.FStore.userField] as? String, let testResult = data[K.FStore.testField] as? [String], let testDate = data[K.FStore.dateField] as? Timestamp {
-                                        let newWorkoutTest = WorkoutTest(user: userTested, workOutResult: testResult, date: testDate)
-                                        self.dataWorkoutTest.append(newWorkoutTest)
-                                        DispatchQueue.main.async {
-                                            self.tableView.dataSource = self
-                                            self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
-                                            self.tableView.reloadData()
-                                            print(self.dataWorkoutTest)
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-    }
+        } // fonction loadData()
     
     
-    func Percent(old: String, new: String, cellForPercent: WorkoutCell) -> String {
-        let oldValue = Double(old)!
-        let newValue = Double(new)!
-        let percent: Double = ((newValue - oldValue) / oldValue) * 100
+    func Percent(old: Double, new: Double, cellForPercent: WorkoutCell) -> String {
+        let percent: Double = ((new - old) / old) * 100
         let percentString = String(format: "%.0f", percent)
         
         if percent>=0 {
@@ -153,6 +115,7 @@ extension ProgressViewController: UITableViewDataSource {
         
         let cell = tableView.dequeueReusableCell(withIdentifier: K.workout.workoutCellIdentifier, for: indexPath) as! WorkoutCell
         
+        // cas particulier seulement : 1 test fait par le user
         if dataWorkoutTest.count == 1 {
             if indexPath.row == 0 {
                 cell.workoutMoveLabel.text = ""
@@ -161,7 +124,7 @@ extension ProgressViewController: UITableViewDataSource {
                 cell.percentLabel.text = "%"
             } else {
                 cell.workoutMoveLabel.text = K.workout.workoutMove[indexPath.row-1]
-                cell.oldDataLabel.text = dataWorkoutTest[0].workOutResult[indexPath.row-1]
+                cell.oldDataLabel.text = String(format: "%.0f", dataWorkoutTest[0].workOutResult[indexPath.row-1])
                 cell.newDataLabel.text = "N/A"
                 cell.percentLabel.text = "N/A"
                 cell.newDataLabel.textColor = UIColor(named: K.BrandColor.greenBrandColor)
@@ -175,8 +138,8 @@ extension ProgressViewController: UITableViewDataSource {
                 cell.percentLabel.text = "%"
             } else {
                 cell.workoutMoveLabel.text = K.workout.workoutMove[indexPath.row-1]
-                cell.oldDataLabel.text = dataWorkoutTest[1].workOutResult[indexPath.row-1]
-                cell.newDataLabel.text = dataWorkoutTest[0].workOutResult[indexPath.row-1]
+                cell.oldDataLabel.text = String(format: "%.0f", dataWorkoutTest[1].workOutResult[indexPath.row-1])
+                cell.newDataLabel.text = String(format: "%.0f", dataWorkoutTest[0].workOutResult[indexPath.row-1])
                 cell.percentLabel.text = Percent(old: dataWorkoutTest[1].workOutResult[indexPath.row-1], new: dataWorkoutTest[0].workOutResult[indexPath.row-1], cellForPercent: cell)
             }
         }

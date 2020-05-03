@@ -9,7 +9,6 @@
 struct K {
     static let appName = "INSANITY"
     static let segueToProgress = "goToProgress"
-
     
     struct BrandColor {
         static let blueGreyBrandColor = "BlueGreyBrandColor"
@@ -19,10 +18,9 @@ struct K {
     struct userCell {
         static let userCellIdentifier = "myReusableCell"
         static let userCellNibName = "UserCell"
-        static let leaAvatar = "LeaAvatar"
-        static let malekAvatar = "MalekAvatar"
-        static let leaLabel = "Lea, super courgette"
-        static let malekLabel = "Malfouf, le nul"
+        static let noOpponentAvatar = "noOpponentAvatar"
+        static let usersAvatar = ["MalekAvatar", "LeaAvatar", "MathAvatar", "LouxAvatar"]
+        static let usersLabel = ["Malfouf, le Nul", "Lea, fit Courgette", "Mathou, super Blonde", "Loux, nihon Kyojin"]
     }
     
     struct workout {
@@ -32,15 +30,19 @@ struct K {
     }
     
     struct FStore {
-        static let collectionName = "workoutTest"
+        static let collectionTestName = "workoutTests"
         static let dateField = "date"
-        static let userField = "user"
-        static let testField = "testArray"
-        static let malekUser = "Malek"
-        static let leaUser = "Lea"
-
-
+        static let idField = "id"
+        static let testField = "testResults"
+        static let collectionUsersName = "users"
+        static let nameField = "name"
+        static let maxField  = "max"
+        static let users = ["Malek", "Lea", "Math", "Loux"]
     }
+    
+
+        
+
 
 
 }

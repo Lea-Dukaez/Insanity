@@ -12,44 +12,39 @@ import Firebase
 class TestViewController: UIViewController {
     
     let db = Firestore.firestore()
-    var leaWorkoutTest = [String]()
-    var malekWorkoutTest = [String]()
+    var userSelected = 0
+    var listWorkoutTest = [Double]()
     var textFieldArray = [UITextField]()
     let alert = UIAlertController(title: "Incomplet", message: "Merci de remplir tous les exercices", preferredStyle: UIAlertController.Style.alert)
     let forbiddenNumber = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"]
 
     
+    @IBOutlet weak var usersPickerView: UIPickerView!
     @IBOutlet weak var validateButton: UIButton!
     
-    @IBOutlet weak var leaSKTextField: UITextField!
-    @IBOutlet weak var malekSKTextField: UITextField!
-    @IBOutlet weak var leaPJKTextField: UITextField!
-    @IBOutlet weak var malekPJKTextField: UITextField!
-    @IBOutlet weak var leaPKTextField: UITextField!
-    @IBOutlet weak var malekPKTextField: UITextField!
-    @IBOutlet weak var leaPJTextField: UITextField!
-    @IBOutlet weak var malekPJTextField: UITextField!
-    @IBOutlet weak var leaJSQTextField: UITextField!
-    @IBOutlet weak var malekJSQTextField: UITextField!
-    @IBOutlet weak var leaSJTextField: UITextField!
-    @IBOutlet weak var malekSJTextField: UITextField!
-    @IBOutlet weak var leaPUJKTextField: UITextField!
-    @IBOutlet weak var malekPUJKTextField: UITextField!
-    @IBOutlet weak var leaPMCTextField: UITextField!
-    @IBOutlet weak var malekPMCTextField: UITextField!
+    @IBOutlet weak var SKTextField: UITextField!
+    @IBOutlet weak var PJKTextField: UITextField!
+    @IBOutlet weak var PKTextField: UITextField!
+    @IBOutlet weak var PJTextField: UITextField!
+    @IBOutlet weak var JSQTextField: UITextField!
+    @IBOutlet weak var SJTextField: UITextField!
+    @IBOutlet weak var PUJKTextField: UITextField!
+    @IBOutlet weak var PMCTextField: UITextField!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        textFieldArray = [leaSKTextField, malekSKTextField, leaPJKTextField, malekPJKTextField, leaPKTextField, malekPKTextField, leaPJTextField, malekPJTextField, leaJSQTextField, malekJSQTextField, leaSJTextField, malekSJTextField, leaPUJKTextField, malekPUJKTextField, leaPMCTextField, malekPMCTextField]
+        usersPickerView.dataSource = self
+        usersPickerView.delegate = self
+        
+        textFieldArray = [SKTextField, PJKTextField, PKTextField, PJTextField, JSQTextField, SJTextField, PUJKTextField, PMCTextField]
 
         for textField in textFieldArray {
             textField.delegate = self
             textField.smartInsertDeleteType = UITextSmartInsertDeleteType.no
             textField.keyboardToolbar.doneBarButton.setTarget(self, action: #selector(doneButtonClicked))
         }
-        
     }
     
     @IBAction func validatePressed(_ sender: UIButton) {
@@ -58,36 +53,21 @@ class TestViewController: UIViewController {
         
         if allHaveText {
             for textField in textFieldArray {
-                if textFieldArray.firstIndex(where: {$0 == textField})! % 2 == 0 {
-                    leaWorkoutTest.append(textField.text!)
-                } else {
-                    malekWorkoutTest.append(textField.text!)
-                }
+                listWorkoutTest.append(Double(textField.text!)!)
             }
-            // Add a new document in Firestore for Lea
-            db.collection(K.FStore.collectionName).addDocument(data: [
-                K.FStore.userField: K.FStore.leaUser,
-                K.FStore.testField: leaWorkoutTest,
+            
+            // Add a new document in Firestore for userSelected
+            db.collection(K.FStore.collectionTestName).addDocument(data: [
+                K.FStore.idField: userSelected,
+                K.FStore.testField: listWorkoutTest,
                 K.FStore.dateField: Timestamp(date: Date())
             ]) { error in
                 if let err = error {
                     print("Error adding document: \(err)")
                 } else {
                     print("Document added!")
-                    self.leaWorkoutTest = [String]()
-                }
-            }
-            // Add a new document in Firestore for Malek
-            db.collection(K.FStore.collectionName).addDocument(data: [
-                K.FStore.userField: K.FStore.malekUser,
-                K.FStore.testField: malekWorkoutTest,
-                K.FStore.dateField: Timestamp(date: Date())
-            ]) { error in
-                if let err = error {
-                    print("Error adding document: \(err)")
-                } else {
-                    print("Document added!")
-                    self.malekWorkoutTest = [String]()
+                    self.majMax(listTest: self.listWorkoutTest)
+                    self.listWorkoutTest = [Double]()
                 }
             }
             // dismiss view
@@ -112,7 +92,7 @@ class TestViewController: UIViewController {
     
     
     @objc func doneButtonClicked(_ sender: UITextField) {
-        if sender == malekPMCTextField {
+        if sender == PMCTextField {
             sender.resignFirstResponder()
         } else {
             if let senderIndex = textFieldArray.firstIndex(where: {$0 == sender}) {
@@ -121,24 +101,72 @@ class TestViewController: UIViewController {
         }
     }
     
+    func majMax(listTest: [Double]) {
+        var newMaxValues: [Double] = []
+        let userRef = db.collection(K.FStore.collectionUsersName).document(String(userSelected))
+        
+        db.runTransaction({ (transaction, errorPointer) -> Any? in
+            let userDocument: DocumentSnapshot
+            do {
+             try userDocument = transaction.getDocument(userRef)
+            } catch let fetchError as NSError {
+                errorPointer?.pointee = fetchError
+                return nil
+            }
+            
+            guard let oldMaxValues = userDocument.data()?[K.FStore.maxField] as? [Double] else {
+                let error = NSError(
+                    domain: "AppErrorDomain",
+                    code: -1,
+                    userInfo: [
+                        NSLocalizedDescriptionKey: "Unable to retrieve maxValue from snapshot \(userDocument)"
+                    ]
+                )
+                errorPointer?.pointee = error
+                return nil
+            }
+            
+            // if it is the first time the user do the test
+            if oldMaxValues.isEmpty {
+                print("testViewController, in maxValue func array empty: \(oldMaxValues), -> maxValue array = \(listTest)")
+                transaction.updateData([K.FStore.maxField: listTest], forDocument: userRef)
+                return nil
+            } else {
+                for index in 0...oldMaxValues.count-1 {
+                    newMaxValues.append(max(listTest[index], oldMaxValues[index]))
+                }
+                print("testViewController, in maxValue func array not empty: \(oldMaxValues), -> new maxValue array = \(newMaxValues)")
+                transaction.updateData([K.FStore.maxField: newMaxValues], forDocument: userRef)
+                print("Document maxValue up to date !")
+                return nil // instead of newMaxValues ??
+            }
+
+            
+        }) { (object, error) in
+            if let err = error {
+                print("Transaction failed: \(err)")
+            } else {
+                print("Transaction successfully committed!")
+            }
+        }
+        
+    }
+    
 }
 
 extension TestViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
         let text = (textField.text! as NSString).replacingCharacters(in: range, with: string)
 
         //Prevent "0" characters to be followed by other number
         if forbiddenNumber.contains(text) {
             return false
         }
-
         //Limit the character count to 3.
         if ((textField.text!) + string).count > 3 {
             return false
         }
-
         //Only allow numbers. No Copy-Paste text values.
         let allowedCharacterSet = CharacterSet.init(charactersIn: "0123456789")
         let textCharacterSet = CharacterSet.init(charactersIn: textField.text! + string)
@@ -146,10 +174,81 @@ extension TestViewController: UITextFieldDelegate {
             return false
         }
         return true
-        
+    }
+}
 
+
+extension TestViewController: UIPickerViewDataSource {
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        return K.FStore.users.count
+    }
+    
+    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+        return 80
     }
     
 }
 
+extension TestViewController: UIPickerViewDelegate {
+    
+    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
 
+        let myView = UIView(frame: CGRect(x: 0, y: 0, width: pickerView.bounds.width - 30, height: 70))
+
+        let myImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 65, height: 65))
+
+        var rowString = String()
+        rowString = K.userCell.usersLabel[row]
+        myImageView.image = UIImage(named: K.userCell.usersAvatar[row])
+ 
+        let myLabel = UILabel(frame: CGRect(x: 80, y: 0, width: pickerView.bounds.width - 90, height: 70 ))
+        myLabel.text = rowString
+        myLabel.font = .systemFont(ofSize: 22, weight: .semibold)
+        myLabel.textColor = .white
+
+        myView.addSubview(myLabel)
+        myView.addSubview(myImageView)
+
+        return myView
+    }
+    
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        userSelected = row
+    }
+}
+
+
+//
+//
+//        db.collection(K.FStore.collectionUsersName).document(String(userSelected))
+//            .getDocument { (document, error) in
+//                if let document = document, document.exists {
+//                    if let data = document.data() {
+//                        if let maxValues = data[K.FStore.maxField] as? [Double] {
+//                            for index in 0...maxValues.count-1 {
+//                                newMax.append(max(listTest[index], maxValues[index]))
+//                            }
+//                        }
+//                    }
+//                } else {
+//                    print("Document does not exist")
+//                }
+//        }
+        
+
+//        // set a Userdocument in collection "users" with new max data
+//        db.collection(K.FStore.collectionUsersName).document(String(userSelected))
+//            .setData([
+//            K.FStore.maxField:[]
+//        ]) { err in
+//            if let err = err {
+//                print("Error writing document: \(err)")
+//            } else {
+//                print("Document successfully written!")
+//            }
+//        }
