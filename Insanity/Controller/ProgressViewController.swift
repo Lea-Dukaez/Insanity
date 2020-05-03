@@ -124,7 +124,7 @@ extension ProgressViewController: UITableViewDataSource {
                 cell.percentLabel.text = "%"
             } else {
                 cell.workoutMoveLabel.text = K.workout.workoutMove[indexPath.row-1]
-                cell.oldDataLabel.text = String(dataWorkoutTest[0].workOutResult[indexPath.row-1])
+                cell.oldDataLabel.text = String(format: "%.0f", dataWorkoutTest[0].workOutResult[indexPath.row-1])
                 cell.newDataLabel.text = "N/A"
                 cell.percentLabel.text = "N/A"
                 cell.newDataLabel.textColor = UIColor(named: K.BrandColor.greenBrandColor)
@@ -138,8 +138,8 @@ extension ProgressViewController: UITableViewDataSource {
                 cell.percentLabel.text = "%"
             } else {
                 cell.workoutMoveLabel.text = K.workout.workoutMove[indexPath.row-1]
-                cell.oldDataLabel.text = String(dataWorkoutTest[1].workOutResult[indexPath.row-1])
-                cell.newDataLabel.text = String(dataWorkoutTest[0].workOutResult[indexPath.row-1])
+                cell.oldDataLabel.text = String(format: "%.0f", dataWorkoutTest[1].workOutResult[indexPath.row-1])
+                cell.newDataLabel.text = String(format: "%.0f", dataWorkoutTest[0].workOutResult[indexPath.row-1])
                 cell.percentLabel.text = Percent(old: dataWorkoutTest[1].workOutResult[indexPath.row-1], new: dataWorkoutTest[0].workOutResult[indexPath.row-1], cellForPercent: cell)
             }
         }

@@ -126,12 +126,21 @@ class TestViewController: UIViewController {
                 return nil
             }
             
-            for index in 0...oldMaxValues.count-1 {
-                newMaxValues.append(max(listTest[index], oldMaxValues[index]))
+            // if it is the first time the user do the test
+            if oldMaxValues.isEmpty {
+                print("testViewController, in maxValue func array empty: \(oldMaxValues), -> maxValue array = \(listTest)")
+                transaction.updateData([K.FStore.maxField: listTest], forDocument: userRef)
+                return nil
+            } else {
+                for index in 0...oldMaxValues.count-1 {
+                    newMaxValues.append(max(listTest[index], oldMaxValues[index]))
+                }
+                print("testViewController, in maxValue func array not empty: \(oldMaxValues), -> new maxValue array = \(newMaxValues)")
+                transaction.updateData([K.FStore.maxField: newMaxValues], forDocument: userRef)
+                print("Document maxValue up to date !")
+                return nil // instead of newMaxValues ??
             }
-            
-            transaction.updateData([K.FStore.maxField: newMaxValues], forDocument: userRef)
-            return newMaxValues // instead of nil ??
+
             
         }) { (object, error) in
             if let err = error {
