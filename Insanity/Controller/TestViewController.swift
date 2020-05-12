@@ -15,7 +15,7 @@ class TestViewController: UIViewController {
     var userSelected = 0
     var listWorkoutTest = [Double]()
     var textFieldArray = [UITextField]()
-    let alert = UIAlertController(title: "Incomplet", message: "Merci de remplir tous les exercices", preferredStyle: UIAlertController.Style.alert)
+    let alert = UIAlertController(title: "Incomplete", message: "Please fill all the exercises", preferredStyle: UIAlertController.Style.alert)
     let forbiddenNumber = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"]
 
     
