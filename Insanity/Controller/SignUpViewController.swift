@@ -11,13 +11,15 @@ import FirebaseAuth
 
 class SignUpViewController: UIViewController {
 
+
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
-    @IBOutlet weak var errorLabel: UILabel!
+    
+    let alertEmpty = UIAlertController(title: "Error", message: "email/password can't be empty", preferredStyle: UIAlertController.Style.alert)
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        errorLabel.text = ""
     }
     
 
@@ -27,22 +29,17 @@ class SignUpViewController: UIViewController {
         let allHaveText = textFieldArray.allSatisfy { $0!.text?.isEmpty == false }
         
         if !allHaveText {
-            self.errorLabel.text = "email/password can't be empty"
-            Timer.scheduledTimer(withTimeInterval: 3.0 , repeats: false) { (timer) in
-                self.errorLabel.text = ""
-            }
+            showAlert(for: alertEmpty)
         } else {
             if let email = self.emailTextField.text, let password = self.passwordTextField.text {
                 
                 Auth.auth().createUser(withEmail: email, password: password) { (dataResult, error) in
                     if let err = error {
-                        self.errorLabel.text = "\(err.localizedDescription)"
-                        Timer.scheduledTimer(withTimeInterval: 3.0 , repeats: false) { (timer) in
-                            self.errorLabel.text = ""
-                        }
+                        let errorMsg = "\(err.localizedDescription)"
+                        let alertError = UIAlertController(title: "Error", message: errorMsg, preferredStyle: UIAlertController.Style.alert)
+                        self.showAlert(for: alertError)
                         return
                     }
-                    
                     self.emailTextField.text = ""
                     self.passwordTextField.text = ""
                     self.performSegue(withIdentifier: K.segueToAccount, sender: self)
@@ -51,6 +48,17 @@ class SignUpViewController: UIViewController {
             }
             
         }
+    }
+    
+    func showAlert(for alert: UIAlertController) {
+        self.present(alert, animated: true) {
+            let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissAlert))
+            alert.view.superview?.subviews[0].addGestureRecognizer(tapGesture)
+        }
+    }
+    
+    @objc func dismissAlert() {
+        self.dismiss(animated: true, completion: nil)
     }
 
 }

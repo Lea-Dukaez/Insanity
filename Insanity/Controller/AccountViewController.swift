@@ -8,10 +8,14 @@
 
 import UIKit
 import FirebaseAuth
+import Firebase
 
 class AccountViewController: UIViewController {
 
+    let db = Firestore.firestore()
     var avatarImage = ""
+    var pseudo = ""
+    
     @IBOutlet weak var pseudoTextField: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
     let alert = UIAlertController(title: "Incomplete", message: "Please enter a pseudo and choose an avatar", preferredStyle: UIAlertController.Style.alert)
@@ -31,7 +35,7 @@ class AccountViewController: UIViewController {
         collectionView.dataSource = self
         collectionView.delegate = self
     }
-    
+
 
     @IBAction func logoutPressed(_ sender: UIButton) {
         do {
@@ -40,25 +44,51 @@ class AccountViewController: UIViewController {
           print ("Error signing out: %@", signOutError)
             return
         }
-        
         print("user logged out")
         self.navigationController!.popToRootViewController(animated: true)
     }
     
-    
     @IBAction func validatePressed(_ sender: UIButton) {
-  
         if pseudoTextField.text?.isEmpty == false &&  avatarImage != "" {
-            print(avatarImage)
-            print(pseudoTextField.text!)
-            // save pseudo and image into firestore
+            pseudo = pseudoTextField.text!
+            createUserInfo()
             performSegue(withIdentifier: K.segueAccountToHome, sender: self)
-            
         } else {
             showAlert()
         }
-        
     }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == K.segueAccountToHome {
+            let homeView = segue.destination as! HomeViewController
+            homeView.pseudoCurrentUser = pseudo
+            homeView.avatarCurrentUser = avatarImage
+        }
+    }
+    
+    func createUserInfo() {
+        Auth.auth().addStateDidChangeListener { (auth, user) in
+            if let user = user {
+                let uid = user.uid
+                // Add a new document in Firestore for new user
+                self.db.collection(K.FStore.collectionUsersName).document(uid).setData([
+                    K.FStore.maxField: [Double](),
+                    K.FStore.pseudoField: self.pseudo,
+                    K.FStore.avatarField: self.avatarImage
+                ]) { error in
+                    if let err = error {
+                        print("Error adding document: \(err)")
+                    } else {
+                        print("Document added!")
+                        self.pseudoTextField.text = ""
+                        self.avatarImage = ""
+                        self.pseudo = ""
+                    }
+                }
+            }
+        }
+    }
+    
     
     func showAlert() {
         self.present(alert, animated: true) {
@@ -73,6 +103,9 @@ class AccountViewController: UIViewController {
     
 
 }
+
+
+// MARK: - UICollectionViewDataSource
 
 extension AccountViewController:  UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -90,6 +123,8 @@ extension AccountViewController:  UICollectionViewDataSource {
 
 }
 
+// MARK: - UICollectionViewDelegate
+
 extension AccountViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         avatarImage = K.avatarImages[indexPath.item]
@@ -98,15 +133,15 @@ extension AccountViewController: UICollectionViewDelegate {
 
 }
 
+// MARK: - UITextFieldDelegate
+
 extension AccountViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-
         //Limit the character count to 3.
         if ((textField.text!) + string).count > 25 {
             return false
         }
-
         return true
     }
 }

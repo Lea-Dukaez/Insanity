@@ -13,6 +13,7 @@ struct K {
     static let segueSigninToHome = "signInToHome"
     static let segueToAccount = "goToAccount"
     static let segueAccountToHome = "accountToHome"
+    static let segueHomeToTest = "goToTest"
     
     static let avatarImages = ["avatar1", "avatar2", "avatar3", "avatar4", "avatar5", "avatar6", "avatar7", "avatar8", "avatar9", "avatar10", "avatar11", "avatar12", "avatar13", "avatar14", "avatar15", "avatar16", "avatar17", "avatar18"]
     static let reuseAvatarIdentifier = "reuseAvatarCell"
@@ -47,8 +48,11 @@ struct K {
         static let testField = "testResults"
         static let collectionUsersName = "users"
         static let nameField = "name"
+        static let pseudoField = "pseudo"
         static let maxField  = "max"
+        static let avatarField = "avatar"
         static let users = ["Malek", "Lea", "Math", "Loux"]
+        
     }
     
 

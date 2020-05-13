@@ -7,19 +7,27 @@
 //
 
 import UIKit
+import FirebaseAuth
 import Firebase
 
 class TestViewController: UIViewController {
     
     let db = Firestore.firestore()
-    var userSelected = 0
+    var currentUserId = ""
+    
+    var userName = ""
+    var avatarImg = ""
+    
     var listWorkoutTest = [Double]()
     var textFieldArray = [UITextField]()
+    
     let alert = UIAlertController(title: "Incomplete", message: "Please fill all the exercises", preferredStyle: UIAlertController.Style.alert)
     let forbiddenNumber = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09"]
 
     
-    @IBOutlet weak var usersPickerView: UIPickerView!
+    @IBOutlet weak var userImage: UIImageView!
+    @IBOutlet weak var userLabel: UILabel!
+    
     @IBOutlet weak var validateButton: UIButton!
     
     @IBOutlet weak var SKTextField: UITextField!
@@ -34,10 +42,10 @@ class TestViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        usersPickerView.dataSource = self
-        usersPickerView.delegate = self
-        
+            
+        userImage.image = UIImage(named: avatarImg)
+        userLabel.text = userName
+    
         textFieldArray = [SKTextField, PJKTextField, PKTextField, PJTextField, JSQTextField, SJTextField, PUJKTextField, PMCTextField]
 
         for textField in textFieldArray {
@@ -47,32 +55,36 @@ class TestViewController: UIViewController {
         }
     }
     
+    
     @IBAction func validatePressed(_ sender: UIButton) {
         
         let allHaveText = textFieldArray.allSatisfy { $0.text?.isEmpty == false }
-        
         if allHaveText {
             for textField in textFieldArray {
                 listWorkoutTest.append(Double(textField.text!)!)
             }
             
-            // Add a new document in Firestore for userSelected
-            db.collection(K.FStore.collectionTestName).addDocument(data: [
-                K.FStore.idField: userSelected,
-                K.FStore.testField: listWorkoutTest,
-                K.FStore.dateField: Timestamp(date: Date())
-            ]) { error in
-                if let err = error {
-                    print("Error adding document: \(err)")
-                } else {
-                    print("Document added!")
-                    self.majMax(listTest: self.listWorkoutTest)
-                    self.listWorkoutTest = [Double]()
+            // Add a new document in Firestore for currentUser
+            Auth.auth().addStateDidChangeListener { (auth, user) in
+                if let user = user {
+                    self.currentUserId = user.uid
+                    self.db.collection(K.FStore.collectionTestName).addDocument(data: [
+                        K.FStore.idField: self.currentUserId,
+                        K.FStore.testField: self.listWorkoutTest,
+                        K.FStore.dateField: Timestamp(date: Date())
+                    ]) { error in
+                        if let err = error {
+                            print("Error adding document: \(err)")
+                        } else {
+                            print("Document added!")
+                            self.majMax(listTest: self.listWorkoutTest)
+                            self.listWorkoutTest = [Double]()
+                        }
+                    }
+                    // dismiss view
+                    self.navigationController?.popViewController(animated: true)
                 }
             }
-            // dismiss view
-            self.navigationController?.popViewController(animated: true)
-            
         } else {
             showAlert()
         }
@@ -103,7 +115,7 @@ class TestViewController: UIViewController {
     
     func majMax(listTest: [Double]) {
         var newMaxValues: [Double] = []
-        let userRef = db.collection(K.FStore.collectionUsersName).document(String(userSelected))
+        let userRef = db.collection(K.FStore.collectionUsersName).document(currentUserId)
         
         db.runTransaction({ (transaction, errorPointer) -> Any? in
             let userDocument: DocumentSnapshot
@@ -137,7 +149,6 @@ class TestViewController: UIViewController {
                 transaction.updateData([K.FStore.maxField: newMaxValues], forDocument: userRef)
                 return nil
             }
-
             
         }) { (object, error) in
             if let err = error {
@@ -146,7 +157,6 @@ class TestViewController: UIViewController {
                 print("Transaction successfully committed!")
             }
         }
-        
     }
     
 }
@@ -174,47 +184,48 @@ extension TestViewController: UITextFieldDelegate {
     }
 }
 
+//
+//
+//extension TestViewController: UIPickerViewDataSource {
+//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+//        return 1
+//    }
+//
+//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+//        return K.FStore.users.count
+//    }
+//
+//    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
+//        return 80
+//    }
+//
+//}
 
-extension TestViewController: UIPickerViewDataSource {
-    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-        return 1
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-        return K.FStore.users.count
-    }
-    
-    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-        return 80
-    }
-    
-}
-
-extension TestViewController: UIPickerViewDelegate {
-    
-    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-
-        let myView = UIView(frame: CGRect(x: 0, y: 0, width: pickerView.bounds.width - 30, height: 70))
-
-        let myImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 65, height: 65))
-
-        var rowString = String()
-        rowString = K.userCell.usersLabel[row]
-        myImageView.image = UIImage(named: K.userCell.usersAvatar[row])
- 
-        let myLabel = UILabel(frame: CGRect(x: 80, y: 0, width: pickerView.bounds.width - 90, height: 70 ))
-        myLabel.text = rowString
-        myLabel.font = .systemFont(ofSize: 22, weight: .semibold)
-        myLabel.textColor = .white
-
-        myView.addSubview(myLabel)
-        myView.addSubview(myImageView)
-
-        return myView
-    }
-    
-
-    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-        userSelected = row
-    }
-}
+//extension TestViewController: UIPickerViewDelegate {
+//
+//    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
+//
+//        let myView = UIView(frame: CGRect(x: 0, y: 0, width: pickerView.bounds.width - 30, height: 70))
+//
+//        let myImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 65, height: 65))
+//
+//        var rowString = String()
+//        rowString = K.userCell.usersLabel[row]
+//        myImageView.image = UIImage(named: K.userCell.usersAvatar[row])
+//
+//        let myLabel = UILabel(frame: CGRect(x: 80, y: 0, width: pickerView.bounds.width - 90, height: 70 ))
+//        myLabel.text = rowString
+//        myLabel.font = .systemFont(ofSize: 22, weight: .semibold)
+//        myLabel.textColor = .white
+//
+//        myView.addSubview(myLabel)
+//        myView.addSubview(myImageView)
+//
+//        return myView
+//    }
+//
+//
+//    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+//        userSelected = row
+//    }
+//}
