@@ -15,11 +15,14 @@ class AccountViewController: UIViewController {
     let db = Firestore.firestore()
     var avatarImage = ""
     var pseudo = ""
+    var userID = ""
+
     
+    @IBOutlet weak var currentUserImage: UIImageView!
+    @IBOutlet weak var currentUserLabel: UILabel!
     @IBOutlet weak var pseudoTextField: UITextField!
     @IBOutlet weak var collectionView: UICollectionView!
-    let alert = UIAlertController(title: "Incomplete", message: "Please enter a pseudo and choose an avatar", preferredStyle: UIAlertController.Style.alert)
-    
+
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
     }
@@ -30,12 +33,15 @@ class AccountViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        currentUserImage.image = UIImage(named: avatarImage)
+        currentUserLabel.text = pseudo
 
         pseudoTextField.delegate = self
         collectionView.dataSource = self
         collectionView.delegate = self
+        
     }
-
 
     @IBAction func logoutPressed(_ sender: UIButton) {
         do {
@@ -49,13 +55,11 @@ class AccountViewController: UIViewController {
     }
     
     @IBAction func validatePressed(_ sender: UIButton) {
-        if pseudoTextField.text?.isEmpty == false &&  avatarImage != "" {
+        if pseudoTextField.text?.isEmpty == false {
             pseudo = pseudoTextField.text!
-            createUserInfo()
-            performSegue(withIdentifier: K.segueAccountToHome, sender: self)
-        } else {
-            showAlert()
         }
+        changePseudoAndImage()
+        performSegue(withIdentifier: K.segueAccountToHome, sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -63,18 +67,19 @@ class AccountViewController: UIViewController {
             let homeView = segue.destination as! HomeViewController
             homeView.pseudoCurrentUser = pseudo
             homeView.avatarCurrentUser = avatarImage
+            homeView.currentUserID = userID
         }
     }
     
-    func createUserInfo() {
+    func changePseudoAndImage() {
         Auth.auth().addStateDidChangeListener { (auth, user) in
             if let user = user {
-                let uid = user.uid
+                self.userID = user.uid
                 // Add a new document in Firestore for new user
-                self.db.collection(K.FStore.collectionUsersName).document(uid).setData([
-                    K.FStore.maxField: [Double](),
+                self.db.collection(K.FStore.collectionUsersName).document(self.userID).setData([
                     K.FStore.pseudoField: self.pseudo,
-                    K.FStore.avatarField: self.avatarImage
+                    K.FStore.avatarField: self.avatarImage,
+                    K.FStore.maxField: [Double]()
                 ]) { error in
                     if let err = error {
                         print("Error adding document: \(err)")
@@ -89,19 +94,6 @@ class AccountViewController: UIViewController {
         }
     }
     
-    
-    func showAlert() {
-        self.present(alert, animated: true) {
-                let tapGesture = UITapGestureRecognizer(target: self, action: #selector(self.dismissAlert))
-            self.alert.view.superview?.subviews[0].addGestureRecognizer(tapGesture)
-        }
-    }
-    
-    @objc func dismissAlert() {
-        self.dismiss(animated: true, completion: nil)
-    }
-    
-
 }
 
 

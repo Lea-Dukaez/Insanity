@@ -133,9 +133,10 @@ class PodiumViewController: UIViewController {
         }
     }
         
-    
 } // end PodiumViewController
 
+
+// MARK: - UIPickerViewDataSource
 
 extension PodiumViewController: UIPickerViewDataSource {
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -146,6 +147,8 @@ extension PodiumViewController: UIPickerViewDataSource {
         return K.workout.workoutMove.count+1
     }
 }
+
+// MARK: - UIPickerViewDelegate
 
 extension PodiumViewController: UIPickerViewDelegate {
     

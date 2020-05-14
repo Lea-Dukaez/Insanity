@@ -116,6 +116,8 @@ class ProgressViewController: UIViewController {
     
 }
 
+// MARK: - UITableViewDataSource
+
 extension ProgressViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return K.workout.workoutMove.count + 1

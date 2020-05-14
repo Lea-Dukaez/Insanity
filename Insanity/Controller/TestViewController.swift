@@ -161,6 +161,8 @@ class TestViewController: UIViewController {
     
 }
 
+// MARK: - UITextFieldDelegate
+
 extension TestViewController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
@@ -183,49 +185,3 @@ extension TestViewController: UITextFieldDelegate {
         return true
     }
 }
-
-//
-//
-//extension TestViewController: UIPickerViewDataSource {
-//    func numberOfComponents(in pickerView: UIPickerView) -> Int {
-//        return 1
-//    }
-//
-//    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
-//        return K.FStore.users.count
-//    }
-//
-//    func pickerView(_ pickerView: UIPickerView, rowHeightForComponent component: Int) -> CGFloat {
-//        return 80
-//    }
-//
-//}
-
-//extension TestViewController: UIPickerViewDelegate {
-//
-//    func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
-//
-//        let myView = UIView(frame: CGRect(x: 0, y: 0, width: pickerView.bounds.width - 30, height: 70))
-//
-//        let myImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: 65, height: 65))
-//
-//        var rowString = String()
-//        rowString = K.userCell.usersLabel[row]
-//        myImageView.image = UIImage(named: K.userCell.usersAvatar[row])
-//
-//        let myLabel = UILabel(frame: CGRect(x: 80, y: 0, width: pickerView.bounds.width - 90, height: 70 ))
-//        myLabel.text = rowString
-//        myLabel.font = .systemFont(ofSize: 22, weight: .semibold)
-//        myLabel.textColor = .white
-//
-//        myView.addSubview(myLabel)
-//        myView.addSubview(myImageView)
-//
-//        return myView
-//    }
-//
-//
-//    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
-//        userSelected = row
-//    }
-//}

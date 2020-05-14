@@ -11,19 +11,16 @@ import FirebaseAuth
 
 class LoginViewController: UIViewController {
 
+    var userID = ""
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
     let alertEmpty = UIAlertController(title: "Error", message: "email/password can't be empty", preferredStyle: UIAlertController.Style.alert)
-
     
-
-
     override func viewDidLoad() {
         super.viewDidLoad()
     }
-    
     
     @IBAction func loginPressed(_ sender: UIButton) {
         
@@ -42,13 +39,16 @@ class LoginViewController: UIViewController {
 
                         return
                     }
+                    if let uid = dataResult?.user.uid {
+                        self.userID = uid
+                        print(self.userID)
+                    }
+                    self.emailTextField.text = ""
+                    self.passwordTextField.text = ""
+                    self.performSegue(withIdentifier: K.segueLoginToHome, sender: self)
+                    print("user logged in !")
                 }
             }
-            
-            self.emailTextField.text = ""
-            self.passwordTextField.text = ""
-            self.performSegue(withIdentifier: K.segueLoginToHome, sender: self)
-            print("user logged in !")
         }
     }
     
@@ -63,6 +63,11 @@ class LoginViewController: UIViewController {
         self.dismiss(animated: true, completion: nil)
     }
     
-    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == K.segueLoginToHome {
+            let homeView = segue.destination as! HomeViewController
+            homeView.currentUserID = userID
+        }
+    }
 
 }
