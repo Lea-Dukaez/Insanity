@@ -17,6 +17,7 @@ class ProgressViewController: UIViewController {
     
     var userName = ""
     var avatarImg = ""
+    var uid = ""
 
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var userImage: UIImageView!
@@ -27,59 +28,45 @@ class ProgressViewController: UIViewController {
         super.viewDidLoad()
         userLabel.text = userName
         userImage.image = UIImage(named: avatarImg)
-        
+            
         loadWorkoutData()
     }
     
     
     func loadWorkoutData() {
-        
         dataWorkoutTest = []
         
-        db.collection(K.FStore.collectionUsersName).whereField(K.FStore.pseudoField, isEqualTo: userName)
-            .getDocuments() { (querySnapshot, err) in
-                if let err = err {
-                    print("Error getting documents: \(err)")
+        db.collection(K.FStore.collectionTestName).order(by:  K.FStore.dateField, descending: true).limit(to: 2)
+            .whereField(K.FStore.idField, isEqualTo: self.uid)
+            .getDocuments { (querySnapshot, error) in
+            if let err = error {
+                print("Error getting documents: \(err)")
+            } else {
+                if querySnapshot!.isEmpty {
+                    self.showMsg()
                 } else {
+                    self.dismissMsg()
+                    // documents exist in Firestore
                     if let snapshotDocuments = querySnapshot?.documents {
-                        let doc = snapshotDocuments[0]
-                        let userID = doc.documentID
-                        
-                        self.db.collection(K.FStore.collectionTestName)
-                        .order(by:  K.FStore.dateField, descending: true).limit(to: 2)
-                        .whereField(K.FStore.idField, isEqualTo: userID)
-                        .getDocuments { (querySnapshot, error) in
-                            if let err = error {
-                                print("Error getting documents: \(err)")
-                            } else {
-                                if querySnapshot!.isEmpty {
-                                    self.showMsg()
-                                } else {
-                                    self.dismissMsg()
-                                    // documents exist in Firestore
-                                    if let snapshotDocuments = querySnapshot?.documents {
-                                        for doc in snapshotDocuments {
-                                            let data = doc.data()
-                                            if let idTested = data[K.FStore.idField] as? Int, let testResult = data[K.FStore.testField] as? [Double], let testDate = data[K.FStore.dateField] as? Timestamp {
-                                                let newWorkout = Workout(userID: idTested, workOutResult: testResult, date: testDate)
-                                                self.dataWorkoutTest.append(newWorkout)
-                                                
-                                                // when data is collected, create the tableview
-                                                DispatchQueue.main.async {
-                                                    self.tableView.dataSource = self
-                                                    self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
-                                                    self.tableView.reloadData()
-                                                } // fin dispatchQueue
-                                            }
-                                        }
-                                    } // fin if let snapshotDoc
-                                }
-                            } // fin else no error ...so access data possible
-                        } // fin getDocument
-                    } // fin querySnapshot user tapped
+                        for doc in snapshotDocuments {
+                            let data = doc.data()
+                            if let idCompetitor = data[K.FStore.idField] as? String, let testResult = data[K.FStore.testField] as? [Double], let testDate = data[K.FStore.dateField] as? Timestamp {
+                                let newWorkout = Workout(userID: idCompetitor, workOutResult: testResult, date: testDate)
+                                self.dataWorkoutTest.append(newWorkout)
+                                
+                                // when data is collected, create the tableview
+                                DispatchQueue.main.async {
+                                    self.tableView.dataSource = self
+                                    self.tableView.register(UINib(nibName: K.workout.workoutCellNibName, bundle: nil), forCellReuseIdentifier: K.workout.workoutCellIdentifier)
+                                    self.tableView.reloadData()
+                                } // fin dispatchQueue
+                            }
+                        }
+                    } // fin if let snapshotDoc
                 }
-            }
-        } // fonction loadData()
+            } // fin else no error ...so access data possible
+        } // fin getDocument
+    } // fonction loadData()
     
     
     func Percent(old: Double, new: Double, cellForPercent: WorkoutCell) -> String {

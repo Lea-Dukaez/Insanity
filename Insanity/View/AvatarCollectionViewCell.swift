@@ -17,7 +17,7 @@ class AvatarCollectionViewCell: UICollectionViewCell {
             if self.isSelected
             {
                 super.isSelected = true
-                self.contentView.backgroundColor = UIColor(red: 0.21, green: 0.28, blue: 0.33, alpha: 1.00)
+                self.contentView.backgroundColor = .white
             }
             else
             {

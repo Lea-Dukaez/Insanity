@@ -63,28 +63,23 @@ class TestViewController: UIViewController {
             for textField in textFieldArray {
                 listWorkoutTest.append(Double(textField.text!)!)
             }
-            
             // Add a new document in Firestore for currentUser
-            Auth.auth().addStateDidChangeListener { (auth, user) in
-                if let user = user {
-                    self.currentUserId = user.uid
-                    self.db.collection(K.FStore.collectionTestName).addDocument(data: [
-                        K.FStore.idField: self.currentUserId,
-                        K.FStore.testField: self.listWorkoutTest,
-                        K.FStore.dateField: Timestamp(date: Date())
-                    ]) { error in
-                        if let err = error {
-                            print("Error adding document: \(err)")
-                        } else {
-                            print("Document added!")
-                            self.majMax(listTest: self.listWorkoutTest)
-                            self.listWorkoutTest = [Double]()
-                        }
-                    }
-                    // dismiss view
-                    self.navigationController?.popViewController(animated: true)
+            self.db.collection(K.FStore.collectionTestName).addDocument(data: [
+                K.FStore.idField: self.currentUserId,
+                K.FStore.testField: self.listWorkoutTest,
+                K.FStore.dateField: Timestamp(date: Date())
+            ]) { error in
+                if let err = error {
+                    print("Error adding document: \(err)")
+                } else {
+                    print("Document added!")
+                    self.majMax(listTest: self.listWorkoutTest)
+                    self.listWorkoutTest = [Double]()
                 }
             }
+            // dismiss view
+            self.navigationController?.popViewController(animated: true)
+   
         } else {
             showAlert()
         }
@@ -115,8 +110,8 @@ class TestViewController: UIViewController {
     
     func majMax(listTest: [Double]) {
         var newMaxValues: [Double] = []
-        let userRef = db.collection(K.FStore.collectionUsersName).document(currentUserId)
         
+        let userRef = db.collection(K.FStore.collectionUsersName).document(currentUserId)
         db.runTransaction({ (transaction, errorPointer) -> Any? in
             let userDocument: DocumentSnapshot
             do {
@@ -143,7 +138,7 @@ class TestViewController: UIViewController {
                 transaction.updateData([K.FStore.maxField: listTest], forDocument: userRef)
                 return nil
             } else {
-                for index in 0...oldMaxValues.count-1 {
+                for index in 0..<oldMaxValues.count {
                     newMaxValues.append(max(listTest[index], oldMaxValues[index]))
                 }
                 transaction.updateData([K.FStore.maxField: newMaxValues], forDocument: userRef)

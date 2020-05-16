@@ -14,6 +14,7 @@ struct K {
     static let segueAccountToHome = "accountToHome"
     static let segueHomeToTest = "goToTest"
     static let segueHomeToAccount = "goToAccount"
+    static let segueWelcomeToHome = "welcomeToHomeloggedIn"
     
     static let avatarImages = ["avatar1", "avatar2", "avatar3", "avatar4", "avatar5", "avatar6", "avatar7", "avatar8", "avatar9", "avatar10", "avatar11", "avatar12", "avatar13", "avatar14", "avatar15", "avatar16", "avatar17", "avatar18"]
     static let reuseAvatarIdentifier = "reuseAvatarCell"
@@ -36,7 +37,7 @@ struct K {
 
     
     struct workout {
-        static let workoutMove = ["Switch Kicks", "Power Jack", "Power Knees", "Power Jump", "Jump Squat Square", "Suicide Jump", "Push-Up Jack", "Plank Mountain Climbers" ]
+        static let workoutMove = ["Switch Kicks", "Power Jack", "Power Knees", "Power Jump", "Global Jump", "Suicide Jump", "Push-Up Jack", "Low Plank Oblique" ]
         static let workoutCellIdentifier = "workoutMoveCell"
         static let workoutCellNibName = "WorkoutCell"
     }

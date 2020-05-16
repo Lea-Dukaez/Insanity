@@ -20,6 +20,10 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        emailTextField.attributedPlaceholder = NSAttributedString(string: "Email",
+        attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
+        passwordTextField.attributedPlaceholder = NSAttributedString(string: "Password",
+        attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
     }
     
     @IBAction func loginPressed(_ sender: UIButton) {
@@ -39,9 +43,13 @@ class LoginViewController: UIViewController {
 
                         return
                     }
+
+                  
                     if let uid = dataResult?.user.uid {
                         self.userID = uid
-                        print(self.userID)
+                        // keep UID for avoid login again after closing the app
+                        UserDefaults.standard.set(uid, forKey: "USER_KEY_UID")
+                        UserDefaults.standard.synchronize()
                     }
                     self.emailTextField.text = ""
                     self.passwordTextField.text = ""

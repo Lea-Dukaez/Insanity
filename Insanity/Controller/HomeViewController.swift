@@ -18,6 +18,7 @@ class HomeViewController: UIViewController {
     
     var pseudo = ""
     var avatar = ""
+    var uid = ""
     
     var dataUsers: [User] = []
     let db = Firestore.firestore()
@@ -35,6 +36,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         self.navigationItem.setHidesBackButton(true, animated: true);
         print("HomeViewController  ViewDidLoad called")
+        print("ViewDidLoad HomeView , userID = \(currentUserID)")
         
         getCurrentUser()
         
@@ -81,7 +83,7 @@ class HomeViewController: UIViewController {
                             let data = doc.data()
                              if let pseudo = data[K.FStore.pseudoField] as? String, let avatar = data[K.FStore.avatarField] as? String {
                                 if doc.documentID != self.currentUserID {
-                                    let newUser = User(pseudo: pseudo, avatar: avatar)
+                                    let newUser = User(pseudo: pseudo, avatar: avatar, id: doc.documentID)
                                     self.dataUsers.append(newUser)
                                     // when data is collected, create the tableview
                                     DispatchQueue.main.async {
@@ -100,7 +102,8 @@ class HomeViewController: UIViewController {
     @IBAction func currentUserPressed(_ sender: UIButton) {
         avatar = avatarCurrentUser
         pseudo = pseudoCurrentUser
-        performSegue(withIdentifier: K.segueToProgress, sender: self)
+        uid = currentUserID
+        performSegue(withIdentifier: K.segueToProgress, sender: self) 
     }
     
     @IBAction func addTestPressed(_ sender: UIButton) {
@@ -119,16 +122,19 @@ class HomeViewController: UIViewController {
             let progressView = segue.destination as! ProgressViewController
             progressView.userName = pseudo 
             progressView.avatarImg = avatar
+            progressView.uid = uid
         }
         if segue.identifier == K.segueHomeToTest {
             let testView = segue.destination as! TestViewController
             testView.userName = pseudoCurrentUser
             testView.avatarImg = avatarCurrentUser
+            testView.currentUserId = currentUserID
         }
         if segue.identifier == K.segueHomeToAccount {
             let accountView = segue.destination as! AccountViewController
             accountView.pseudo = pseudoCurrentUser
             accountView.avatarImage = avatarCurrentUser
+            accountView.userID = currentUserID
         }
     }
 
@@ -146,8 +152,6 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: K.userCell.userCellIdentifier, for: indexPath) as! UserCell
-        print(dataUsers)
-        print(indexPath.row)
         cell.avatarImage.image = UIImage(named: dataUsers[indexPath.row].avatar)
         cell.userLabel.text = dataUsers[indexPath.row].pseudo
    
@@ -157,6 +161,7 @@ extension HomeViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         avatar = dataUsers[indexPath.row].avatar
         pseudo = dataUsers[indexPath.row].pseudo
+        uid = dataUsers[indexPath.row].id
         performSegue(withIdentifier: K.segueToProgress, sender: self)
     }
     

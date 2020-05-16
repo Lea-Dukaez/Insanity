@@ -16,6 +16,7 @@ class SignUpViewController: UIViewController {
     
     var pseudo = ""
     var avatar = ""
+     var userID = ""
 
 
     @IBOutlet weak var emailTextField: UITextField!
@@ -48,6 +49,13 @@ class SignUpViewController: UIViewController {
                         self.showAlert(for: alertError)
                         return
                     }
+  
+                    if let uid = dataResult?.user.uid {
+                        self.userID = uid
+                        // keep UID for avoid login again after closing the app
+                          UserDefaults.standard.set(uid, forKey: "USER_KEY_UID")
+                          UserDefaults.standard.synchronize()
+                    }
                     let randomInt = Int.random(in: 0...17)
                     self.pseudo = email
                     self.avatar = K.avatarImages[randomInt]
@@ -74,21 +82,17 @@ class SignUpViewController: UIViewController {
     }
 
     func createUserInfo(emailDefault: String, avatarDefault: String) {
-        Auth.auth().addStateDidChangeListener { (auth, user) in
-            if let user = user {
-                let uid = user.uid
-                // Add a new document in Firestore for new user
-                self.db.collection(K.FStore.collectionUsersName).document(uid).setData([
-                    K.FStore.maxField: [Double](),
-                    K.FStore.pseudoField: emailDefault,
-                    K.FStore.avatarField: avatarDefault
-                ]) { error in
-                    if let err = error {
-                        print("Error adding document: \(err)")
-                    }
-                }
+        // Add a new document in Firestore for new user
+        self.db.collection(K.FStore.collectionUsersName).document(self.userID).setData([
+            K.FStore.maxField: [Double](),
+            K.FStore.pseudoField: emailDefault,
+            K.FStore.avatarField: avatarDefault
+        ]) { error in
+            if let err = error {
+                print("Error adding document: \(err)")
             }
         }
+
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -96,6 +100,8 @@ class SignUpViewController: UIViewController {
             let accountView = segue.destination as! AccountViewController
             accountView.pseudo = pseudo
             accountView.avatarImage = avatar
+            accountView.userID = userID
         }
     }
 }
+

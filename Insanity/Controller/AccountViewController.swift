@@ -33,6 +33,7 @@ class AccountViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        pseudoTextField.attributedPlaceholder = NSAttributedString(string: "Change your pseudonyme", attributes: [NSAttributedString.Key.foregroundColor: UIColor.lightGray])
         
         currentUserImage.image = UIImage(named: avatarImage)
         currentUserLabel.text = pseudo
@@ -50,8 +51,13 @@ class AccountViewController: UIViewController {
           print ("Error signing out: %@", signOutError)
             return
         }
+        if Auth.auth().currentUser == nil {
+            // Remove User Session from device
+            UserDefaults.standard.removeObject(forKey: "USER_KEY_UID")
+            UserDefaults.standard.synchronize()
         print("user logged out")
         self.navigationController!.popToRootViewController(animated: true)
+        }
     }
     
     @IBAction func validatePressed(_ sender: UIButton) {
@@ -72,24 +78,17 @@ class AccountViewController: UIViewController {
     }
     
     func changePseudoAndImage() {
-        Auth.auth().addStateDidChangeListener { (auth, user) in
-            if let user = user {
-                self.userID = user.uid
-                // Add a new document in Firestore for new user
-                self.db.collection(K.FStore.collectionUsersName).document(self.userID).setData([
-                    K.FStore.pseudoField: self.pseudo,
-                    K.FStore.avatarField: self.avatarImage,
-                    K.FStore.maxField: [Double]()
-                ]) { error in
-                    if let err = error {
-                        print("Error adding document: \(err)")
-                    } else {
-                        print("Document added!")
-                        self.pseudoTextField.text = ""
-                        self.avatarImage = ""
-                        self.pseudo = ""
-                    }
-                }
+        self.db.collection(K.FStore.collectionUsersName).document(self.userID).updateData([
+            K.FStore.pseudoField: self.pseudo,
+            K.FStore.avatarField: self.avatarImage,
+        ]) { error in
+            if let err = error {
+                print("Error adding document: \(err)")
+            } else {
+                print("Document added!")
+                self.pseudoTextField.text = ""
+                self.avatarImage = ""
+                self.pseudo = ""
             }
         }
     }

@@ -10,6 +10,8 @@ import UIKit
 
 class WelcomeViewController: UIViewController {
     
+    var currentUserID = ""
+    
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = true
     }
@@ -20,7 +22,20 @@ class WelcomeViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        // Check if the user is logged in
+        if UserDefaults.standard.object(forKey: "USER_KEY_UID") != nil {
+        // send them to a new view controller or do whatever you want
+            currentUserID = UserDefaults.standard.object(forKey: "USER_KEY_UID") as! String
+            performSegue(withIdentifier: K.segueWelcomeToHome, sender: self)
+          
+        }
     }
     
-
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == K.segueWelcomeToHome {
+            let homeView = segue.destination as! HomeViewController
+            homeView.currentUserID = currentUserID
+        }
+    }
 }

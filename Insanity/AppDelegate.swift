@@ -22,7 +22,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         IQKeyboardManager.shared.previousNextDisplayMode = .alwaysHide
         IQKeyboardManager.shared.keyboardDistanceFromTextField = 20
         IQKeyboardManager.shared.shouldResignOnTouchOutside = true
-        
     
         return true
     }
